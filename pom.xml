@@ -113,7 +113,7 @@
     <repositories>
         <repository>
             <id>local-file-repo</id>
-            <url>file:///Users/yusatainfotechprivatelimited/.m2/repository</url>
+            <url>file:///Users/ashutoshmain/Ashutosh/MainChallangePromptWar/.m2/repository</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
@@ -128,7 +128,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>local-file-plugin-repo</id>
-            <url>file:///Users/yusatainfotechprivatelimited/.m2/repository</url>
+            <url>file:///Users/ashutoshmain/Ashutosh/MainChallangePromptWar/.m2/repository</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>

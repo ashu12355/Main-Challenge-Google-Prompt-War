@@ -653,6 +653,10 @@
 
         // Fetch Journals List
         async function fetchJournals() {
+            if (isDemoMode) {
+                renderJournalsList(demoReflections);
+                return;
+            }
             try {
                 const res = await fetch('/api/v1/journals', {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -660,33 +664,46 @@
                 if (!res.ok) return;
 
                 const journals = await res.json();
-                const list = document.getElementById('journalHistoryList');
-
-                if (journals.length === 0) {
-                    list.innerHTML = `<div class="text-slate-500 text-xs text-center py-12">No reflection entries saved yet.</div>`;
-                    return;
-                }
-
-                list.innerHTML = journals.map(j => {
-                    const date = new Date(j.creationDate).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                    return `
-                        <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-xl space-y-1.5 hover:border-slate-700/80 transition-all duration-300">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">${date}</span>
-                                <i data-lucide="check-circle-2" class="h-3.5 w-3.5 text-emerald-500"></i>
-                            </div>
-                            <p class="text-xs text-slate-300 leading-relaxed font-sans">${escapeHTML(j.entryText)}</p>
-                        </div>
-                    `;
-                }).join('');
-                lucide.createIcons();
+                renderJournalsList(journals);
             } catch (err) {
                 console.error(err);
             }
         }
 
+        function renderJournalsList(journals) {
+            const list = document.getElementById('journalHistoryList');
+
+            if (journals.length === 0) {
+                list.innerHTML = `<div class="text-slate-500 text-xs text-center py-12">No reflection entries saved yet.</div>`;
+                return;
+            }
+
+            list.innerHTML = journals.map(j => {
+                const date = new Date(j.creationDate).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-xl space-y-1.5 hover:border-slate-700/80 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">${date}</span>
+                            <i data-lucide="check-circle-2" class="h-3.5 w-3.5 text-emerald-500"></i>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed font-sans">${escapeHTML(j.entryText)}</p>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
         // Fetch Mood Analytics and Render Graph
         async function fetchAnalytics() {
+            if (isDemoMode) {
+                const counts = {};
+                demoLogs.forEach(log => {
+                    counts[log.triggerTag] = (counts[log.triggerTag] || 0) + 1;
+                });
+                renderChart(demoLogs);
+                renderTriggerDistribution(counts);
+                return;
+            }
             try {
                 const res = await fetch('/api/v1/moods/analytics', {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -847,6 +864,44 @@
             skeleton.classList.remove('hidden');
             nudgeBtn.disabled = true;
             nudgeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            if (isDemoMode) {
+                // Simulate network latency for the AI nudge
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                const tips = {
+                    'JEE': [
+                        "Review your physics backlog (mechanics/electrodynamics) in 25-minute Pomodoro bursts. Focus on core formulas rather than marathon problem solving.",
+                        "Mock test stamina peaks when you take a 5-minute break every hour. Keep hydrated and practice mindful breathing.",
+                        "For mathematics, solve 5 high-yield previous year questions today and review incorrect options carefully."
+                    ],
+                    'NEET': [
+                        "Revise NCERT biology diagrams methodically. Active recall of labeled structures reduces anxiety.",
+                        "Organic chemistry conversions are best studied in short 15-minute intervals. Avoid late-night cramming.",
+                        "Maintain a steady pace in mock tests. If stuck, move on and review in the final 20 minutes."
+                    ],
+                    'UPSC': [
+                        "Limit your study resources to standard books today. GS mock writing is about structure, not absolute memorization.",
+                        "Read editorial summaries rather than entire newspapers to prevent information overload.",
+                        "Take a 15-minute walk tonight to wind down and clear your mind."
+                    ]
+                };
+                
+                const examTips = tips[targetExam] || [
+                    "Split your daily study plan into micro-milestones. Celebrate small completions to build momentum.",
+                    "Ensure 7 hours of restorative sleep to allow your neural networks to consolidate memory patterns.",
+                    "Stress is a signal of care, not failure. Breathe slowly for 4 seconds, hold for 4, and release for 4."
+                ];
+                
+                const randomTip = examTips[Math.floor(Math.random() * examTips.length)];
+                nudgeTextEl.textContent = randomTip;
+                
+                skeleton.classList.add('hidden');
+                nudgeTextEl.classList.remove('hidden');
+                nudgeBtn.disabled = false;
+                nudgeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                return;
+            }
 
             try {
                 const res = await fetch('/api/v1/nudges/personalized', {
