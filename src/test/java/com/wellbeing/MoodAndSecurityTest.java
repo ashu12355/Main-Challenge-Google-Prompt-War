@@ -67,7 +67,7 @@ public class MoodAndSecurityTest {
     @Test
     public void testMoodLoggingAndSecurityIsolation() {
         // Log mood for User A
-        MoodLogRequest moodRequest = new MoodLogRequest(MoodType.ANXIOUS, TriggerTag.MOCK_TEST_MARKS);
+        MoodLogRequest moodRequest = new MoodLogRequest(MoodType.ANXIOUS, TriggerTag.MOCK_TEST_PERCENTILE);
         given()
                 .header("Authorization", "Bearer " + tokenA)
                 .contentType(ContentType.JSON)
@@ -77,7 +77,7 @@ public class MoodAndSecurityTest {
                 .then()
                 .statusCode(200)
                 .body("mood", is("ANXIOUS"))
-                .body("triggerTag", is("MOCK_TEST_MARKS"));
+                .body("triggerTag", is("MOCK_TEST_PERCENTILE"));
 
         // Verify User A's analytics show the log
         given()

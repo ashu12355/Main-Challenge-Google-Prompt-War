@@ -49,24 +49,24 @@ public class GeminiService {
         User user = userService.getCurrentUser();
         List<MoodLog> recentMoods = moodLogRepository.findByUserOrderByTimestampDesc(user);
 
-        // Construct context-aware prompt
+        // Construct context-aware prompt localized for Indian students
         String targetExamName = user.getTargetExam().name();
         StringBuilder promptBuilder = new StringBuilder();
-        promptBuilder.append("You are a supportive student counselor. Generate a concise, 2-sentence wellness advice/nudge (maximum 40 words) for a student preparing for ")
+        promptBuilder.append("You are a supportive student counselor. Generate a concise, 2-sentence wellness advice/nudge (maximum 40 words) for an Indian student preparing for ")
                 .append(targetExamName)
-                .append(".");
+                .append(" under typical household or hostel pressures.");
 
         String contextTag = "GENERAL";
         if (!recentMoods.isEmpty()) {
             MoodLog latest = recentMoods.get(0);
             contextTag = latest.getMoodScore().name() + "_" + latest.getTriggerTag().name();
-            promptBuilder.append(" Their current emotional state is ")
+            promptBuilder.append(" Their emotional state is ")
                     .append(latest.getMoodScore().name())
                     .append(" and their stress trigger is ")
                     .append(latest.getTriggerTag().name())
-                    .append(". Empathize with this specific state and offer a practical stress-management action.");
+                    .append(". Empathize with this and suggest a specific localized break or coping action (e.g. taking a 5-minute walk on the terrace, listening to lo-fi Bollywood beats, having a hot cup of cutting chai, or doing 2 minutes of Anulom Vilom breathing).");
         } else {
-            promptBuilder.append(" Offer a general tip on building study stamina, taking breaks, or dealing with revision stress.");
+            promptBuilder.append(" Suggest a practical tip like taking a short walk on the terrace, listening to Bollywood lo-fi beats, having cutting chai, or doing Anulom Vilom to manage study workload.");
         }
 
         String prompt = promptBuilder.toString();
@@ -112,18 +112,18 @@ public class GeminiService {
     private String generateMockNudge(User user, List<MoodLog> recentMoods) {
         String exam = user.getTargetExam().name();
         if (recentMoods.isEmpty()) {
-            return "Preparing for " + exam + " can feel intense, but consistency is key. Remember to divide your syllabus into daily bite-sized tasks and take 5-minute breathing breaks every hour.";
+            return "Preparing for " + exam + " can feel intense, but consistency is key. Remember to divide your syllabus, take a short terrace walk, or have a cup of hot cutting chai.";
         }
         MoodLog latest = recentMoods.get(0);
         switch (latest.getMoodScore()) {
-            case EXCELLENT:
-                return "Fantastic to see your positive momentum during " + exam + " preparation! Harness this focus to tackle your toughest revision sections today, but pace yourself.";
+            case HIGH_MOTIVATION:
+                return "Fod denge! 🚀 Love this high motivation for your " + exam + " prep. Tackle your toughest revision slots now, and celebrate with a cup of hot cutting chai later.";
             case ANXIOUS:
-                return "It's completely normal to feel anxious about " + latest.getTriggerTag().name() + " for " + exam + ". Try the 4-7-8 breathing technique now to center your thoughts and ease the pressure.";
+                return "Feeling thoda tension? 😟 Don't let your " + latest.getTriggerTag().name().replace("_", " ") + " overwhelm you. Try doing 2 minutes of Anulom Vilom breathing or take a 5-minute walk on the terrace to center yourself.";
+            case FRUSTRATED:
+                return "Dimag kharab hai? 🤯 Exam pressure can feel very heavy. Turn on some lo-fi Bollywood beats, take a deep breath, and step away from the screen for 5 minutes.";
             case BURNED_OUT:
-                return "Burnout warning detected for your " + exam + " prep. Step away from your mock tests or backlog for 30 minutes, hydrate, and take a quick walk. Rest is productive!";
-            case TIRED:
-                return "Feeling tired is your body's signal to recharge. Prioritize a solid 8 hours of sleep tonight so your brain can consolidate what you revised today.";
+                return "Thak gaya hu? 🛌 Step away from your desk completely. Grab a quick snack, talk to a hostel friend, or take a short nap. Rest is vital during this marathon!";
             default:
                 return "Keep moving forward step by step on your " + exam + " journey. You have what it takes to manage this workload.";
         }

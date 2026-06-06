@@ -30,7 +30,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 10% 20%, rgba(17, 24, 39, 1) 0%, rgba(8, 10, 24, 1) 90%);
+            background: linear-gradient(135deg, #f4f9f4 0%, #fafaf9 50%, #f1f5f9 100%);
         }
         .font-outfit {
             font-family: 'Outfit', sans-serif;
@@ -40,45 +40,45 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.3);
+            background: rgba(226, 232, 240, 0.5);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(99, 102, 241, 0.4);
+            background: rgba(99, 102, 241, 0.3);
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(99, 102, 241, 0.6);
+            background: rgba(99, 102, 241, 0.5);
         }
     </style>
 </head>
-<body class="h-full text-slate-100 flex flex-col antialiased selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+<body class="h-full text-slate-700 flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
 
     <!-- Glowing blob decorations -->
-    <div class="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-emerald-100/40 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-indigo-100/30 blur-[120px] pointer-events-none"></div>
 
     <!-- Header Navigation -->
-    <header class="w-full border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
+    <header class="w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center shadow-md shadow-indigo-200">
                     <i data-lucide="brain-circuit" class="h-5 w-5 text-white"></i>
                 </div>
                 <div>
-                    <span class="font-outfit text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-200 via-indigo-100 to-white bg-clip-text text-transparent">MindFlow</span>
-                    <span class="text-xs block text-slate-400 font-medium tracking-wide">STUDENT STRESS COMPANION</span>
+                    <span class="font-outfit text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-700 via-indigo-500 to-slate-800 bg-clip-text text-transparent">MindFlow</span>
+                    <span class="text-xs block text-slate-500 font-semibold tracking-wide">STUDENT STRESS COMPANION</span>
                 </div>
             </div>
             
             <div class="flex items-center gap-4">
                 <!-- Target Exam Indicator -->
-                <div id="examBadge" class="hidden px-3.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/80 text-xs font-semibold text-indigo-300 tracking-wide">
+                <div id="examBadge" class="hidden px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-xs font-bold text-indigo-700 tracking-wide">
                     TARGET: <span id="userExam">JEE</span>
                 </div>
                 <!-- User Profile Menu -->
                 <div id="userProfile" class="hidden flex items-center gap-3">
-                    <span id="userName" class="text-sm font-semibold text-slate-200 hidden sm:inline">Student</span>
-                    <button onclick="handleLogout()" class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 hover:bg-slate-800/50 hover:border-rose-950/40 focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all" aria-label="Log Out">
+                    <span id="userName" class="text-sm font-semibold text-slate-700 hidden sm:inline">Student</span>
+                    <button onclick="handleLogout()" class="p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-rose-600 hover:bg-slate-50 hover:border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all" aria-label="Log Out">
                         <i data-lucide="log-out" class="h-4 w-4"></i>
                     </button>
                 </div>
@@ -90,31 +90,32 @@
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         
         <!-- ================= AUTH SCREEN ================= -->
-        <section id="authSection" class="max-w-md mx-auto my-12 bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-8 rounded-2xl shadow-2xl relative overflow-hidden transition-all duration-500">
-            <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500 via-violet-600 to-indigo-500"></div>
+        <!-- ================= AUTH SCREEN ================= -->
+        <section id="authSection" class="max-w-md mx-auto my-12 bg-white border border-slate-200 p-8 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-500">
+            <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-500"></div>
             
             <div class="text-center mb-8">
-                <h2 class="font-outfit text-3xl font-bold text-white mb-2">Welcome to MindFlow</h2>
-                <p class="text-slate-400 text-sm">Empowering students through high-pressure exam cycles</p>
+                <h2 class="font-outfit text-3xl font-bold text-slate-800 mb-2">Welcome to MindFlow</h2>
+                <p class="text-slate-500 text-sm font-medium">Empowering students through high-pressure exam cycles</p>
             </div>
 
             <!-- Tab Buttons -->
-            <div class="flex p-1 bg-slate-950/60 border border-slate-800 rounded-xl mb-6">
+            <div class="flex p-1 bg-slate-100 border border-slate-200 rounded-xl mb-6">
                 <button id="loginTabBtn" onclick="toggleAuthTab('login')" class="w-1/2 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all duration-300">Log In</button>
-                <button id="signupTabBtn" onclick="toggleAuthTab('signup')" class="w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all duration-300">Sign Up</button>
+                <button id="signupTabBtn" onclick="toggleAuthTab('signup')" class="w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-300">Sign Up</button>
             </div>
 
             <!-- Login Form -->
             <form id="loginForm" onsubmit="handleAuth(event, 'login')" class="space-y-4">
                 <div>
-                    <label for="loginUser" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
-                    <input type="text" id="loginUser" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="Enter your username">
+                    <label for="loginUser" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Username</label>
+                    <input type="text" id="loginUser" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="Enter your username">
                 </div>
                 <div>
-                    <label for="loginPass" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
-                    <input type="password" id="loginPass" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="••••••••">
+                    <label for="loginPass" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Password</label>
+                    <input type="password" id="loginPass" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="••••••••">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md shadow-indigo-600/10 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     Access Dashboard
                 </button>
             </form>
@@ -122,16 +123,16 @@
             <!-- Signup Form -->
             <form id="signupForm" onsubmit="handleAuth(event, 'signup')" class="space-y-4 hidden">
                 <div>
-                    <label for="signupUser" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
-                    <input type="text" id="signupUser" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="Pick a username">
+                    <label for="signupUser" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Username</label>
+                    <input type="text" id="signupUser" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="Pick a username">
                 </div>
                 <div>
-                    <label for="signupPass" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
-                    <input type="password" id="signupPass" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="At least 6 characters">
+                    <label for="signupPass" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Password</label>
+                    <input type="password" id="signupPass" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="At least 6 characters">
                 </div>
                 <div>
-                    <label for="signupExam" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Target Exam</label>
-                    <select id="signupExam" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                    <label for="signupExam" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Target Exam</label>
+                    <select id="signupExam" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
                         <option value="JEE">JEE (Joint Entrance Examination)</option>
                         <option value="NEET">NEET (National Eligibility cum Entrance Test)</option>
                         <option value="CUET">CUET (Common University Entrance Test)</option>
@@ -141,183 +142,344 @@
                         <option value="BOARDS">Boards (10th/12th Board Examinations)</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md shadow-indigo-600/10 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     Register Account
                 </button>
             </form>
 
             <!-- Try Offline Demo Mode Trigger -->
-            <div class="mt-6 border-t border-slate-800/80 pt-4 flex flex-col items-center">
-                <button type="button" onclick="activateDemoMode()" class="w-full flex items-center justify-center gap-2 text-center text-xs text-indigo-400 hover:text-indigo-300 font-semibold focus:outline-none hover:underline py-2 rounded-lg bg-indigo-950/20 border border-indigo-900/40 transition-all hover:bg-indigo-950/30">
-                    <i data-lucide="zap" class="h-3.5 w-3.5"></i>
+            <div class="mt-6 border-t border-slate-200 pt-4 flex flex-col items-center">
+                <button type="button" onclick="activateDemoMode()" class="w-full flex items-center justify-center gap-2 text-center text-xs text-indigo-700 hover:text-indigo-800 font-bold focus:outline-none hover:underline py-2.5 rounded-lg bg-indigo-50 border border-indigo-100 transition-all hover:bg-indigo-100/50">
+                    <i data-lucide="zap" class="h-3.5 w-3.5 text-indigo-600"></i>
                     <span>Try Offline Demo Mode (Bypass Backend)</span>
                 </button>
-                <span class="text-[10px] text-slate-500 mt-2 text-center">Bypasses sandbox network blocks to run app in simulated preview mode.</span>
+                <span class="text-[10px] text-slate-500 mt-2 text-center font-medium">Bypasses sandbox network blocks to run app in simulated preview mode.</span>
             </div>
         </section>
 
         <!-- ================= MAIN DASHBOARD ================= -->
         <section id="dashboardSection" class="hidden space-y-8 animate-[fadeIn_0.5s_ease-out]">
             
-            <!-- Welcome Nudge Banner -->
-            <div class="bg-gradient-to-r from-slate-900/90 to-indigo-950/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                <div class="space-y-2 max-w-2xl">
-                    <h1 class="font-outfit text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-                        Hello, <span id="studentHeading" class="text-indigo-400">Student</span>! Keep your mind calm.
-                    </h1>
-                    <div id="aiNudgeContent">
-                        <!-- Nudge block -->
-                        <div class="text-slate-300 text-sm leading-relaxed" id="nudgeText">
-                            Click below to generate your personalized AI-driven wellness advice tailored to your target exam timeline.
-                        </div>
+            <!-- Sidebar Navigation & Main Content Area Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+                
+                <!-- Left Sidebar Navigation -->
+                <div class="md:col-span-1 space-y-4 md:sticky md:top-24 z-20">
+                    <div class="bg-white border border-slate-200/80 p-4 rounded-2xl shadow-sm space-y-2">
+                        <span class="block text-[10px] uppercase font-extrabold tracking-wider text-slate-400 px-3 mb-2">Navigation</span>
+                        <button type="button" id="tab_wellbeing" onclick="switchDashboardTab('wellbeing')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-50 border border-indigo-100 text-indigo-700">
+                            <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+                            <span>Dashboard</span>
+                        </button>
+                        <button type="button" id="tab_analyzer" onclick="switchDashboardTab('analyzer')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800">
+                            <i data-lucide="file-key-2" class="h-5 w-5"></i>
+                            <span>Paper Analyzer</span>
+                        </button>
                     </div>
-                    <!-- Skeleton Loader -->
-                    <div id="nudgeSkeleton" class="hidden space-y-2">
-                        <div class="h-4 bg-slate-800 rounded w-3/4 animate-pulse"></div>
-                        <div class="h-4 bg-slate-800 rounded w-1/2 animate-pulse"></div>
+                    
+                    <div class="bg-gradient-to-tr from-indigo-50/50 to-emerald-50/30 border border-indigo-100/60 p-5 rounded-2xl shadow-sm space-y-3">
+                        <div class="h-8 w-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                            <i data-lucide="graduation-cap" class="h-4.5 w-4.5 text-white"></i>
+                        </div>
+                        <h4 class="font-outfit text-sm font-bold text-slate-800">Mock papers are stepping stones!</h4>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">Use MindFlow's paper analyzer to turn test performance into a stress-free action plan. Fod denge!</p>
                     </div>
                 </div>
-                <button onclick="fetchNudge()" id="nudgeBtn" class="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold px-5 py-3 rounded-xl shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <i data-lucide="sparkles" class="h-4 w-4"></i>
-                    <span>Generate Tip</span>
-                </button>
-            </div>
 
-            <!-- Two Column Layout: Logs & Analytics -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                <!-- Left Block: Logging Inputs (Mood & Reflection) -->
-                <div class="lg:col-span-1 space-y-8">
+                <!-- Right Main Content Area -->
+                <div class="md:col-span-3 space-y-8">
                     
-                    <!-- Mood Tracker Log Form -->
-                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg relative">
-                        <h2 class="font-outfit text-lg font-bold text-white mb-5 flex items-center gap-2">
-                            <i data-lucide="smile" class="text-indigo-400 h-5 w-5"></i>
-                            <span>How is your stress level?</span>
-                        </h2>
+                    <!-- View 1: Core Dashboard (Well-being & Stress Tracker) -->
+                    <div id="wellbeingView" class="space-y-8">
+                        <!-- Welcome Nudge Banner -->
+                        <div class="bg-gradient-to-r from-emerald-50 to-indigo-50/50 border border-emerald-100 rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+                            <div class="space-y-2 max-w-2xl">
+                                <h1 class="font-outfit text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+                                    Hello, <span id="studentHeading" class="text-indigo-700">Student</span>! Keep your mind calm.
+                                </h1>
+                                <div id="aiNudgeContent">
+                                    <!-- Nudge block -->
+                                    <div class="text-slate-600 text-sm leading-relaxed font-medium" id="nudgeText">
+                                        Click below to generate your personalized AI-driven wellness advice tailored to your target exam timeline.
+                                    </div>
+                                </div>
+                                <!-- Skeleton Loader -->
+                                <div id="nudgeSkeleton" class="hidden space-y-2">
+                                    <div class="h-4 bg-slate-200 rounded w-3/4 animate-pulse"></div>
+                                    <div class="h-4 bg-slate-200 rounded w-1/2 animate-pulse"></div>
+                                </div>
+                            </div>
+                            <button onclick="fetchNudge()" id="nudgeBtn" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-emerald-500 hover:from-indigo-700 hover:to-emerald-600 text-white font-semibold px-5 py-3 rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <i data-lucide="sparkles" class="h-4 w-4 text-white"></i>
+                                <span>Generate Tip</span>
+                            </button>
+                        </div>
 
-                        <form id="moodForm" onsubmit="handleMoodSubmit(event)" class="space-y-5">
-                            <!-- Emojis Accessible Selectors -->
-                            <div>
-                                <span class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Select Current State</span>
-                                <div class="grid grid-cols-4 gap-2.5" role="radiogroup" aria-label="Mood options">
-                                    <button type="button" onclick="selectMood('EXCELLENT')" id="mood_EXCELLENT" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Excellent mood">
-                                        <span class="text-2xl mb-1">😇</span>
-                                        <span class="text-[10px] font-semibold text-slate-400">Excellent</span>
-                                    </button>
-                                    <button type="button" onclick="selectMood('ANXIOUS')" id="mood_ANXIOUS" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Anxious mood">
-                                        <span class="text-2xl mb-1">😰</span>
-                                        <span class="text-[10px] font-semibold text-slate-400">Anxious</span>
-                                    </button>
-                                    <button type="button" onclick="selectMood('BURNED_OUT')" id="mood_BURNED_OUT" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Burned out mood">
-                                        <span class="text-2xl mb-1">🔥</span>
-                                        <span class="text-[10px] font-semibold text-slate-400">Burned Out</span>
-                                    </button>
-                                    <button type="button" onclick="selectMood('TIRED')" id="mood_TIRED" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Tired mood">
-                                        <span class="text-2xl mb-1">😴</span>
-                                        <span class="text-[10px] font-semibold text-slate-400">Tired</span>
+                        <!-- Two Column Layout: Logs & Analytics -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            
+                            <!-- Left Block: Logging Inputs (Mood & Reflection) -->
+                            <div class="lg:col-span-1 space-y-8">
+                                
+                                <!-- Mood Tracker Log Form -->
+                                <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm relative">
+                                    <h2 class="font-outfit text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
+                                        <i data-lucide="smile" class="text-indigo-600 h-5 w-5"></i>
+                                        <span>How is your stress level?</span>
+                                    </h2>
+
+                                    <form id="moodForm" onsubmit="handleMoodSubmit(event)" class="space-y-5">
+                                        <!-- Emojis Accessible Selectors -->
+                                        <div>
+                                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Select Current State</span>
+                                            <div class="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Mood options">
+                                                <button type="button" onclick="selectMood('HIGH_MOTIVATION')" id="mood_HIGH_MOTIVATION" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Fod denge mood">
+                                                    <span class="text-2xl mb-1">🚀</span>
+                                                    <span class="text-xs font-bold text-slate-700">Fod denge!</span>
+                                                </button>
+                                                <button type="button" onclick="selectMood('ANXIOUS')" id="mood_ANXIOUS" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Thoda tension hai mood">
+                                                    <span class="text-2xl mb-1">😟</span>
+                                                    <span class="text-xs font-bold text-slate-700">Thoda tension hai</span>
+                                                </button>
+                                                <button type="button" onclick="selectMood('FRUSTRATED')" id="mood_FRUSTRATED" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Dimag kharab hai mood">
+                                                    <span class="text-2xl mb-1">🤯</span>
+                                                    <span class="text-xs font-bold text-slate-700">Dimag kharab hai</span>
+                                                </button>
+                                                <button type="button" onclick="selectMood('BURNED_OUT')" id="mood_BURNED_OUT" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Thak gaya hu mood">
+                                                    <span class="text-2xl mb-1">🛌</span>
+                                                    <span class="text-xs font-bold text-slate-700">Thak gaya hu</span>
+                                                </button>
+                                            </div>
+                                            <input type="hidden" id="selectedMood" required>
+                                        </div>
+
+                                        <!-- Trigger Selection -->
+                                        <div>
+                                            <label for="triggerTag" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Major Stress Trigger</label>
+                                            <select id="triggerTag" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                                                <option value="COACHING_CLASS_BACKLOG">Coaching Class Backlog</option>
+                                                <option value="MOCK_TEST_PERCENTILE">Mock Test Percentile</option>
+                                                <option value="PEER_COMPARISON">Sharma Ji Ka Beta / Peer Comparison</option>
+                                                <option value="FAMILY_EXPECTATIONS">Family & Relatives Expectations</option>
+                                                <option value="HOMESICKNESS">Hostel Food / Homesickness</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 border border-transparent text-white font-semibold py-3 px-4 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            Log Stress State
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Guided reflection Evening Journal -->
+                                <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+                                    <h2 class="font-outfit text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                        <i data-lucide="book-heart" class="text-indigo-600 h-5 w-5"></i>
+                                        <span>Evening Reflection</span>
+                                    </h2>
+                                    <p class="text-slate-500 text-xs mb-5 font-medium">Answer tailored guided questions to limit negative rumination.</p>
+
+                                    <form id="journalForm" onsubmit="handleJournalSubmit(event)" class="space-y-4">
+                                        <div>
+                                            <label for="journalText" id="journalPromptLabel" class="block text-sm text-indigo-700 font-bold mb-2 leading-relaxed">
+                                                What is one mock syllabus milestone you made progress on today, and how will you wind down tonight?
+                                            </label>
+                                            <textarea id="journalText" required rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" placeholder="Write down your reflections (we automatically filter HTML script tags)..."></textarea>
+                                        </div>
+
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            Save Reflection
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Block: Dynamic Trends & History -->
+                            <div class="lg:col-span-2 space-y-8">
+                                
+                                <!-- Graph Chart Panel -->
+                                <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <h2 class="font-outfit text-lg font-bold text-slate-800 flex items-center gap-2">
+                                            <i data-lucide="line-chart" class="text-indigo-600 h-5 w-5"></i>
+                                            <span>Mood & Stress Analytics</span>
+                                        </h2>
+                                        <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg">LAST 7 DAYS</span>
+                                    </div>
+                                    <div class="relative h-[280px] w-full flex items-center justify-center">
+                                        <canvas id="moodChart" aria-label="Line graph mapping emotional scores over time"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Journal timeline history & stress stats -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    
+                                    <!-- Timeline -->
+                                    <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col h-[320px]">
+                                        <h2 class="font-outfit text-base font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2 flex-shrink-0">
+                                            <i data-lucide="history" class="text-indigo-600 h-4.5 w-4.5"></i>
+                                            <span>Journal History</span>
+                                        </h2>
+                                        <div id="journalHistoryList" class="space-y-4 overflow-y-auto flex-grow pr-1">
+                                            <div class="text-slate-400 text-sm text-center py-8">No reflection entries yet.</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stress Statistics / Triggers Counts -->
+                                    <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col h-[320px]">
+                                        <h2 class="font-outfit text-base font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2 flex-shrink-0">
+                                            <i data-lucide="alert-triangle" class="text-indigo-600 h-4.5 w-4.5"></i>
+                                            <span>Trigger Distribution</span>
+                                        </h2>
+                                        <div id="triggerStats" class="space-y-3.5 overflow-y-auto flex-grow pr-1">
+                                            <div class="text-slate-400 text-sm text-center py-8">Log stress states to populate stats.</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- View 2: Smart Mock Test & Marksheet Analyzer -->
+                    <div id="analyzerView" class="hidden space-y-8">
+                        
+                        <!-- Header Banner -->
+                        <div class="bg-gradient-to-r from-indigo-50 to-emerald-50/40 border border-indigo-100 rounded-2xl p-6 relative overflow-hidden shadow-sm">
+                            <div class="space-y-1.5 max-w-2xl">
+                                <h1 class="font-outfit text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+                                    Smart Mock Test & Marksheet Analyzer
+                                </h1>
+                                <p class="text-slate-500 text-sm font-semibold">
+                                    Upload your test papers or result sheets to get an encouraging, highly actionable study plan.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Main Grid: Upload & Results -->
+                        <div class="grid grid-cols-1 gap-8">
+                            
+                            <!-- Analyzer Card -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm space-y-6">
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                                        <i data-lucide="file-key" class="text-indigo-600 h-5 w-5"></i>
+                                        <span class="font-outfit text-lg font-bold text-slate-800">Analyze Your Test Paper</span>
+                                    </div>
+                                    <p class="text-slate-500 text-xs font-semibold leading-relaxed">
+                                        Drag and drop your mock test paper or marksheet here. Don't stress about the score, let's figure out the next step together!
+                                    </p>
+                                </div>
+
+                                <!-- Drag & Drop Zone -->
+                                <div id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave()" ondrop="handleDrop(event)" onclick="triggerFileSelect()" class="border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-slate-50/50 hover:bg-indigo-50/5 rounded-2xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-3">
+                                    <div class="h-12 w-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                        <i data-lucide="upload-cloud" class="h-6 w-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-700">Drag & drop your file here, or <span class="text-indigo-600 hover:underline">browse</span></p>
+                                        <p class="text-slate-400 text-[10px] mt-1 font-semibold">Supports PDF, PNG, JPEG, WebP (Max 10MB)</p>
+                                    </div>
+                                    <input type="file" id="analyzerFile" accept="image/*,application/pdf" class="hidden" onchange="handleFileSelect(event)">
+                                </div>
+
+                                <!-- Selected File Status -->
+                                <div id="fileStatus" class="hidden flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700">
+                                    <div class="flex items-center gap-2">
+                                        <i data-lucide="file" class="text-indigo-600 h-4.5 w-4.5"></i>
+                                        <span id="fileName" class="truncate max-w-[200px] sm:max-w-xs">paper.pdf</span>
+                                        <span id="fileSize" class="text-xs text-slate-400">(1.2 MB)</span>
+                                    </div>
+                                    <button type="button" onclick="clearSelectedFile()" class="text-slate-400 hover:text-rose-600 transition-colors">
+                                        <i data-lucide="trash-2" class="h-4.5 w-4.5"></i>
                                     </button>
                                 </div>
-                                <input type="hidden" id="selectedMood" required>
+
+                                <button type="button" id="analyzeBtn" onclick="runAnalysis()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="play" class="h-4 w-4"></i>
+                                    <span>Analyze Performance</span>
+                                </button>
                             </div>
 
-                            <!-- Trigger Selection -->
-                            <div>
-                                <label for="triggerTag" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Major Stress Trigger</label>
-                                <select id="triggerTag" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
-                                    <option value="MOCK_TEST_MARKS">Mock Test Marks</option>
-                                    <option value="SYLLABUS_BACKLOG">Syllabus Backlog</option>
-                                    <option value="PEER_PRESSURE">Peer Pressure</option>
-                                    <option value="EXAM_DATE_ANXIETY">Exam Date Anxiety</option>
-                                    <option value="WORKLOAD">Heavy Workload / Stamina</option>
-                                    <option value="GENERAL_STRESS">General Stress</option>
-                                </select>
+                            <!-- Loading State -->
+                            <div id="analyzerLoading" class="hidden bg-white border border-slate-200 p-12 rounded-2xl shadow-sm text-center flex flex-col items-center justify-center gap-4 animate-pulse">
+                                <div class="relative flex items-center justify-center">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-100 border-t-indigo-600"></div>
+                                    <i data-lucide="brain-circuit" class="absolute h-5 w-5 text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-outfit text-base font-bold text-slate-800">Analyzing your paper...</h3>
+                                    <p class="text-xs text-slate-500 font-semibold mt-1">Finding the best way to improve! Please hang tight.</p>
+                                </div>
                             </div>
 
-                            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700/80 border border-slate-700 text-white font-semibold py-3 px-4 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                Log Stress State
-                            </button>
-                        </form>
-                    </div>
+                            <!-- Results Container -->
+                            <div id="analyzerResults" class="hidden space-y-6 animate-[fadeIn_0.5s_ease-out]">
+                                
+                                <!-- Encouragement Statement -->
+                                <div class="bg-gradient-to-tr from-amber-50/50 to-indigo-50/30 border border-amber-100 rounded-2xl p-6 shadow-sm">
+                                    <h3 class="font-outfit text-base font-bold text-slate-800 flex items-center gap-2 mb-2">
+                                        <i data-lucide="heart" class="text-rose-500 fill-rose-100 h-5 w-5"></i>
+                                        <span>Mentor's Advice</span>
+                                    </h3>
+                                    <p id="mentorEncouragement" class="text-slate-700 text-sm font-medium leading-relaxed italic">
+                                        Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next...
+                                    </p>
+                                </div>
 
-                    <!-- Guided reflection Evening Journal -->
-                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg">
-                        <h2 class="font-outfit text-lg font-bold text-white mb-2 flex items-center gap-2">
-                            <i data-lucide="book-heart" class="text-indigo-400 h-5 w-5"></i>
-                            <span>Evening Reflection</span>
-                        </h2>
-                        <p class="text-slate-400 text-xs mb-5">Answer tailored guided questions to limit negative rumination.</p>
+                                <!-- Strengths & Focus Areas Grid -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    
+                                    <!-- Strong Areas (Confidence Booster) -->
+                                    <div class="bg-emerald-50/10 border border-emerald-100 rounded-2xl p-6 shadow-sm">
+                                        <h3 class="font-outfit text-base font-bold text-emerald-800 flex items-center gap-2 mb-4">
+                                            <i data-lucide="check-circle" class="text-emerald-600 h-5 w-5"></i>
+                                            <span>Strong Areas</span>
+                                        </h3>
+                                        <ul id="strongAreasList" class="space-y-3 text-slate-700 text-xs font-semibold">
+                                            <!-- List elements injected via JS -->
+                                        </ul>
+                                    </div>
 
-                        <form id="journalForm" onsubmit="handleJournalSubmit(event)" class="space-y-4">
-                            <div>
-                                <label for="journalText" id="journalPromptLabel" class="block text-sm text-indigo-300 font-medium mb-2 leading-relaxed">
-                                    What is one mock syllabus milestone you made progress on today, and how will you wind down tonight?
-                                </label>
-                                <textarea id="journalText" required rows="4" class="w-full bg-slate-950/60 border border-slate-800 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" placeholder="Write down your reflections (we automatically filter HTML script tags)..."></textarea>
+                                    <!-- Focus Areas (Constructive feedback) -->
+                                    <div class="bg-rose-50/10 border border-rose-100 rounded-2xl p-6 shadow-sm">
+                                        <h3 class="font-outfit text-base font-bold text-rose-800 flex items-center gap-2 mb-4">
+                                            <i data-lucide="help-circle" class="text-rose-600 h-5 w-5"></i>
+                                            <span>Focus Areas (Lost Marks)</span>
+                                        </h3>
+                                        <ul id="focusAreasList" class="space-y-3 text-slate-700 text-xs font-semibold">
+                                            <!-- List elements injected via JS -->
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Action Plan Card -->
+                                <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+                                    <h3 class="font-outfit text-base font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+                                        <i data-lucide="map" class="text-indigo-600 h-5 w-5"></i>
+                                        <span>Empathetic Action Plan (Next Steps)</span>
+                                    </h3>
+                                    
+                                    <div id="actionPlanSteps" class="space-y-6">
+                                        <!-- Steps injected via JS -->
+                                    </div>
+                                </div>
+
                             </div>
 
-                            <button type="submit" class="w-full bg-indigo-600/90 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                Save Reflection
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-
-                <!-- Right Block: Dynamic Trends & History -->
-                <div class="lg:col-span-2 space-y-8">
-                    
-                    <!-- Graph Chart Panel -->
-                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="font-outfit text-lg font-bold text-white flex items-center gap-2">
-                                <i data-lucide="line-chart" class="text-indigo-400 h-5 w-5"></i>
-                                <span>Mood & Stress Analytics</span>
-                            </h2>
-                            <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 bg-indigo-950/50 border border-indigo-900/30 text-indigo-300 rounded-lg">LAST 7 DAYS</span>
                         </div>
-                        <div class="relative h-[280px] w-full flex items-center justify-center">
-                            <canvas id="moodChart" aria-label="Line graph mapping emotional scores over time"></canvas>
-                        </div>
                     </div>
-
-                    <!-- Journal timeline history & stress stats -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <!-- Timeline -->
-                        <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col h-[320px]">
-                            <h2 class="font-outfit text-base font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-2 flex-shrink-0">
-                                <i data-lucide="history" class="text-indigo-400 h-4.5 w-4.5"></i>
-                                <span>Journal History</span>
-                            </h2>
-                            <div id="journalHistoryList" class="space-y-4 overflow-y-auto flex-grow pr-1">
-                                <div class="text-slate-500 text-sm text-center py-8">No reflection entries yet.</div>
-                            </div>
-                        </div>
-
-                        <!-- Stress Statistics / Triggers Counts -->
-                        <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col h-[320px]">
-                            <h2 class="font-outfit text-base font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-2 flex-shrink-0">
-                                <i data-lucide="alert-triangle" class="text-indigo-400 h-4.5 w-4.5"></i>
-                                <span>Trigger Distribution</span>
-                            </h2>
-                            <div id="triggerStats" class="space-y-3.5 overflow-y-auto flex-grow pr-1">
-                                <div class="text-slate-500 text-sm text-center py-8">Log stress states to populate stats.</div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
 
         </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="w-full border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 mt-auto">
+    <footer class="w-full border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500 mt-auto">
         <div class="max-w-7xl mx-auto px-4">
             <p>© 2026 MindFlow Student Health Initiative. Fully responsive and WCAG AA contrast compliant.</p>
         </div>
@@ -331,11 +493,34 @@
         let targetExam = localStorage.getItem('target_exam') || '';
         let currentSelectedMood = '';
         let chartInstance = null;
+        let selectedFile = null;
 
         // Offline Demo Mode state
         let isDemoMode = localStorage.getItem('is_demo_mode') === 'true';
         let demoLogs = JSON.parse(localStorage.getItem('demo_logs') || '[]');
         let demoReflections = JSON.parse(localStorage.getItem('demo_reflections') || '[]');
+
+        function switchDashboardTab(tab) {
+            const wellbeingView = document.getElementById('wellbeingView');
+            const analyzerView = document.getElementById('analyzerView');
+            const tabWellbeing = document.getElementById('tab_wellbeing');
+            const tabAnalyzer = document.getElementById('tab_analyzer');
+
+            if (tab === 'wellbeing') {
+                wellbeingView.classList.remove('hidden');
+                analyzerView.classList.add('hidden');
+                
+                tabWellbeing.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-50 border border-indigo-100 text-indigo-700";
+                tabAnalyzer.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
+            } else {
+                wellbeingView.classList.add('hidden');
+                analyzerView.classList.remove('hidden');
+                
+                tabAnalyzer.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-50 border border-indigo-100 text-indigo-700";
+                tabWellbeing.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
+            }
+            lucide.createIcons();
+        }
 
         function activateDemoMode() {
             isDemoMode = true;
@@ -351,16 +536,16 @@
             // Seed initial data
             if (demoLogs.length === 0) {
                 demoLogs = [
-                    { id: 1, mood: 'EXCELLENT', triggerTag: 'GENERAL_STRESS', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 2, mood: 'TIRED', triggerTag: 'WORKLOAD', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 3, mood: 'ANXIOUS', triggerTag: 'SYLLABUS_BACKLOG', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 4, mood: 'BURNED_OUT', triggerTag: 'MOCK_TEST_MARKS', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
+                    { id: 1, mood: 'HIGH_MOTIVATION', triggerTag: 'COACHING_CLASS_BACKLOG', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 2, mood: 'FRUSTRATED', triggerTag: 'HOMESICKNESS', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 3, mood: 'ANXIOUS', triggerTag: 'PEER_COMPARISON', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 4, mood: 'BURNED_OUT', triggerTag: 'MOCK_TEST_PERCENTILE', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
                 ];
                 localStorage.setItem('demo_logs', JSON.stringify(demoLogs));
             }
             if (demoReflections.length === 0) {
                 demoReflections = [
-                    { id: 1, entryText: "Completed my JEE mathematics practice sheet, but got a bit anxious about backlog.", creationDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
+                    { id: 1, entryText: "Revised JEE Chemistry notes today, but felt homesick in the evening.", creationDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
                 ];
                 localStorage.setItem('demo_reflections', JSON.stringify(demoReflections));
             }
@@ -370,26 +555,25 @@
 
         // Emojis mapping to numeric value for line graph
         const moodNumericValue = {
-            'EXCELLENT': 4,
+            'HIGH_MOTIVATION': 4,
             'ANXIOUS': 2,
-            'BURNED_OUT': 1,
-            'TIRED': 2
+            'FRUSTRATED': 2,
+            'BURNED_OUT': 1
         };
 
         const moodEmoji = {
-            'EXCELLENT': '😇 Excellent',
-            'ANXIOUS': '😰 Anxious',
-            'BURNED_OUT': '🔥 Burned Out',
-            'TIRED': '😴 Tired'
+            'HIGH_MOTIVATION': '🚀 Fod denge!',
+            'ANXIOUS': '😟 Thoda tension hai',
+            'FRUSTRATED': '🤯 Dimag kharab hai',
+            'BURNED_OUT': '🛌 Thak gaya hu'
         };
 
         const triggerNames = {
-            'MOCK_TEST_MARKS': 'Mock Test Marks',
-            'SYLLABUS_BACKLOG': 'Syllabus Backlog',
-            'PEER_PRESSURE': 'Peer Pressure',
-            'EXAM_DATE_ANXIETY': 'Exam Date Anxiety',
-            'WORKLOAD': 'Heavy Workload',
-            'GENERAL_STRESS': 'General Stress'
+            'COACHING_CLASS_BACKLOG': 'Coaching Class Backlog',
+            'MOCK_TEST_PERCENTILE': 'Mock Test Percentile',
+            'PEER_COMPARISON': 'Sharma Ji Ka Beta / Peer Comparison',
+            'FAMILY_EXPECTATIONS': 'Family & Relatives Expectations',
+            'HOMESICKNESS': 'Hostel Food / Homesickness'
         };
 
         // On Load
@@ -427,6 +611,9 @@
             // Tailor the journal prompts based on exam
             updateJournalPrompts();
 
+            // Reset tab view to Wellbeing Dashboard on access
+            switchDashboardTab('wellbeing');
+
             // Load initial API data
             fetchAnalytics();
             fetchJournals();
@@ -442,12 +629,12 @@
                 loginForm.classList.remove('hidden');
                 signupForm.classList.add('hidden');
                 loginTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all duration-300';
-                signupTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all duration-300';
+                signupTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-500 hover:text-slate-800 transition-all duration-300';
             } else {
                 loginForm.classList.add('hidden');
                 signupForm.classList.remove('hidden');
                 signupTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all duration-300';
-                loginTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all duration-300';
+                loginTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-500 hover:text-slate-800 transition-all duration-300';
             }
         }
 
@@ -538,13 +725,13 @@
 
             // Reset borders
             document.querySelectorAll('.mood-btn').forEach(btn => {
-                btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+                btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-50');
                 btn.setAttribute('aria-checked', 'false');
             });
 
             // Set active state
             const activeBtn = document.getElementById(`mood_${mood}`);
-            activeBtn.classList.add('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+            activeBtn.classList.add('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-50');
             activeBtn.setAttribute('aria-checked', 'true');
         }
 
@@ -571,7 +758,7 @@
                 currentSelectedMood = '';
                 document.getElementById('selectedMood').value = '';
                 document.querySelectorAll('.mood-btn').forEach(btn => {
-                    btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+                    btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-50');
                     btn.setAttribute('aria-checked', 'false');
                 });
 
@@ -598,7 +785,7 @@
                 currentSelectedMood = '';
                 document.getElementById('selectedMood').value = '';
                 document.querySelectorAll('.mood-btn').forEach(btn => {
-                    btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+                    btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-50');
                     btn.setAttribute('aria-checked', 'false');
                 });
 
@@ -674,19 +861,19 @@
             const list = document.getElementById('journalHistoryList');
 
             if (journals.length === 0) {
-                list.innerHTML = `<div class="text-slate-500 text-xs text-center py-12">No reflection entries saved yet.</div>`;
+                list.innerHTML = `<div class="text-slate-400 text-xs text-center py-12">No reflection entries saved yet.</div>`;
                 return;
             }
 
             list.innerHTML = journals.map(j => {
                 const date = new Date(j.creationDate).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                 return `
-                    <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-xl space-y-1.5 hover:border-slate-700/80 transition-all duration-300">
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 hover:border-slate-300 transition-all duration-300">
                         <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">${date}</span>
-                            <i data-lucide="check-circle-2" class="h-3.5 w-3.5 text-emerald-500"></i>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${date}</span>
+                            <i data-lucide="check-circle-2" class="h-3.5 w-3.5 text-emerald-600"></i>
                         </div>
-                        <p class="text-xs text-slate-300 leading-relaxed font-sans">${escapeHTML(j.entryText)}</p>
+                        <p class="text-xs text-slate-700 leading-relaxed font-sans font-medium">${escapeHTML(j.entryText)}</p>
                     </div>
                 `;
             }).join('');
@@ -719,11 +906,11 @@
             }
         }
 
-        // Draw Line Chart.js
+        // Draw Line Chart
         function renderChart(logs) {
             const ctx = document.getElementById('moodChart').getContext('2d');
             
-            // Take up to 10 recent logs in chronological order
+            // Take up to 12 recent logs in chronological order
             const recentLogs = [...logs].slice(0, 12).reverse();
 
             const labels = recentLogs.map(log => {
@@ -755,7 +942,7 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
-                        scales: { y: { display: false }, x: { grid: { color: 'rgba(255,255,255,0.03)' } } }
+                        scales: { y: { display: false }, x: { grid: { color: '#e2e8f0' } } }
                     }
                 });
                 return;
@@ -768,14 +955,14 @@
                     datasets: [{
                         label: 'Stress Indicator Level',
                         data: dataPoints,
-                        borderColor: '#6366f1',
+                        borderColor: '#4f46e5',
                         borderWidth: 3,
-                        pointBackgroundColor: '#818cf8',
-                        pointBorderColor: '#1e1b4b',
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#ffffff',
                         pointBorderWidth: 2,
                         pointRadius: 6,
                         pointHoverRadius: 8,
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.05)',
                         fill: true,
                         tension: 0.35
                     }]
@@ -791,10 +978,10 @@
                                     return tooltipsText[context.dataIndex];
                                 }
                             },
-                            backgroundColor: '#0f172a',
-                            titleColor: '#94a3b8',
-                            bodyColor: '#f1f5f9',
-                            borderColor: '#334155',
+                            backgroundColor: '#ffffff',
+                            titleColor: '#64748b',
+                            bodyColor: '#0f172a',
+                            borderColor: '#e2e8f0',
                             borderWidth: 1,
                             padding: 10,
                             bodyFont: { family: 'Inter' }
@@ -807,19 +994,19 @@
                             ticks: {
                                 stepSize: 1,
                                 callback: function(value) {
-                                    if (value === 1) return '🔥 Burnout';
-                                    if (value === 2) return '😰 Anxious/Tired';
-                                    if (value === 4) return '😇 Excellent';
+                                    if (value === 1) return '🛌 Thak gaya';
+                                    if (value === 2) return 'Tension / Frustrated';
+                                    if (value === 4) return '🚀 Fod denge!';
                                     return '';
                                 },
-                                color: '#94a3b8',
+                                color: '#475569',
                                 font: { size: 10, family: 'Outfit', weight: 'bold' }
                             },
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                            grid: { color: '#e2e8f0' }
                         },
                         x: {
-                            ticks: { color: '#94a3b8', font: { size: 10, family: 'Inter' } },
-                            grid: { color: 'rgba(255, 255, 255, 0.03)' }
+                            ticks: { color: '#475569', font: { size: 10, family: 'Inter' } },
+                            grid: { color: '#f1f5f9' }
                         }
                     }
                 }
@@ -834,7 +1021,7 @@
             const total = list.reduce((sum, item) => sum + item[1], 0);
 
             if (total === 0) {
-                target.innerHTML = `<div class="text-slate-500 text-xs text-center py-12">Log your stress parameters to view distributions.</div>`;
+                target.innerHTML = `<div class="text-slate-400 text-xs text-center py-12">Log your stress parameters to view distributions.</div>`;
                 return;
             }
 
@@ -843,10 +1030,10 @@
                 return `
                     <div class="space-y-1.5">
                         <div class="flex justify-between text-xs">
-                            <span class="font-medium text-slate-300">${triggerNames[key] || key}</span>
-                            <span class="font-bold text-indigo-400">${val} log${val > 1 ? 's' : ''} (${percent}%)</span>
+                            <span class="font-medium text-slate-600">${triggerNames[key] || key}</span>
+                            <span class="font-bold text-indigo-600">${val} log${val > 1 ? 's' : ''} (${percent}%)</span>
                         </div>
-                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-900">
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
                             <div class="bg-gradient-to-r from-indigo-500 to-violet-600 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
                         </div>
                     </div>
@@ -871,26 +1058,26 @@
                 
                 const tips = {
                     'JEE': [
-                        "Review your physics backlog (mechanics/electrodynamics) in 25-minute Pomodoro bursts. Focus on core formulas rather than marathon problem solving.",
-                        "Mock test stamina peaks when you take a 5-minute break every hour. Keep hydrated and practice mindful breathing.",
-                        "For mathematics, solve 5 high-yield previous year questions today and review incorrect options carefully."
+                        "Fod denge! 🚀 Feeling stressed about coaching backlog? Take a 5-minute walk on the terrace, then break your backlog into small modules.",
+                        "Mock test percentile is just a diagnostic tool. Have a hot cup of cutting chai and revise the errors calmly.",
+                        "Practice 2 minutes of Anulom Vilom breathing before starting your Physics mock revision. Consistency is key!"
                     ],
                     'NEET': [
-                        "Revise NCERT biology diagrams methodically. Active recall of labeled structures reduces anxiety.",
-                        "Organic chemistry conversions are best studied in short 15-minute intervals. Avoid late-night cramming.",
-                        "Maintain a steady pace in mock tests. If stuck, move on and review in the final 20 minutes."
+                        "NCERT biology diagrams need active recall. Put on some lo-fi Bollywood beats in the background and biology revision will flow naturally.",
+                        "Tired of hostels or feeling homesick? Call a family member for 5 minutes, then tackle your physics formulas.",
+                        "Do 2 minutes of Anulom Vilom breathing. It eases mock exam percentile anxiety and refreshes your focus."
                     ],
                     'UPSC': [
-                        "Limit your study resources to standard books today. GS mock writing is about structure, not absolute memorization.",
-                        "Read editorial summaries rather than entire newspapers to prevent information overload.",
-                        "Take a 15-minute walk tonight to wind down and clear your mind."
+                        "GS answer writing backlog can feel overwhelming. Take a walk on the terrace, clear your mind, and make a structured list.",
+                        "Sharma Ji Ka Beta comparison doesn't define your UPSC journey. Fuel your prep with a hot cup of cutting chai.",
+                        "Tune in to calm lo-fi Bollywood tunes while writing answers to keep your pace steady and mind peaceful."
                     ]
                 };
                 
                 const examTips = tips[targetExam] || [
                     "Split your daily study plan into micro-milestones. Celebrate small completions to build momentum.",
                     "Ensure 7 hours of restorative sleep to allow your neural networks to consolidate memory patterns.",
-                    "Stress is a signal of care, not failure. Breathe slowly for 4 seconds, hold for 4, and release for 4."
+                    "Practice 2 minutes of Anulom Vilom breathing. Breathe slowly, clear your mind, and reset your focus."
                 ];
                 
                 const randomTip = examTips[Math.floor(Math.random() * examTips.length)];
@@ -909,7 +1096,7 @@
                 });
 
                 if (!res.ok) {
-                    nudgeTextEl.textContent = "Take a deep breath and split your review tasks. Consistent small breaks yield premium retention!";
+                    nudgeTextEl.textContent = "Have a cup of hot cutting chai and take a brief walk on the terrace. Consistent small breaks yield premium retention!";
                     return;
                 }
 
@@ -917,13 +1104,234 @@
                 nudgeTextEl.textContent = data.nudgeText;
             } catch (err) {
                 console.error(err);
-                nudgeTextEl.textContent = "Take a deep breath and split your review tasks. Consistent small breaks yield premium retention!";
+                nudgeTextEl.textContent = "Have a cup of hot cutting chai and take a brief walk on the terrace. Consistent small breaks yield premium retention!";
             } finally {
                 skeleton.classList.add('hidden');
                 nudgeTextEl.classList.remove('hidden');
                 nudgeBtn.disabled = false;
                 nudgeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
+        }
+
+        // File Drag and Drop Handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            const dropZone = document.getElementById('dropZone');
+            dropZone.classList.add('border-indigo-500', 'bg-indigo-50/20');
+        }
+
+        function handleDragLeave() {
+            const dropZone = document.getElementById('dropZone');
+            dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/20');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            handleDragLeave();
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function triggerFileSelect() {
+            document.getElementById('analyzerFile').click();
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function processFile(file) {
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'application/pdf'];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Unsupported file type. Please upload a PDF or an image (PNG, JPEG, WebP).");
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File size exceeds 10MB limit.");
+                return;
+            }
+
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = `(${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+            
+            document.getElementById('fileStatus').classList.remove('hidden');
+            document.getElementById('dropZone').classList.add('hidden');
+        }
+
+        function clearSelectedFile() {
+            selectedFile = null;
+            document.getElementById('analyzerFile').value = '';
+            document.getElementById('fileStatus').classList.add('hidden');
+            document.getElementById('dropZone').classList.remove('hidden');
+            document.getElementById('analyzerResults').classList.add('hidden');
+        }
+
+        async function runAnalysis() {
+            if (!selectedFile) {
+                alert("Please select or drop a marksheet/test paper first.");
+                return;
+            }
+
+            const loading = document.getElementById('analyzerLoading');
+            const results = document.getElementById('analyzerResults');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+
+            loading.classList.remove('hidden');
+            results.classList.add('hidden');
+            analyzeBtn.disabled = true;
+            analyzeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            if (isDemoMode) {
+                // Simulate network analysis call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Construct a realistic mock response matching targetExam
+                const mockResponses = {
+                    'JEE': {
+                        strongAreas: [
+                            "Optics and Modern Physics conceptual questions were fully correct.",
+                            "Organic Chemistry nomenclature and basic GOC problems solved accurately."
+                        ],
+                        focusAreas: [
+                            "Rotational Dynamics and Mechanics (lost marks in torque application).",
+                            "Integration and Calculus limits in Mathematics section."
+                        ],
+                        actionPlan: [
+                            "Allocate 45 minutes every morning to solve 10 problems on Rotational Mechanics torque and angular momentum.",
+                            "Revise Integration limits properties and solve standard textbook exercises this Wednesday.",
+                            "Attempt a 30-minute timed sectional test for Organic Chemistry to lock in your speed."
+                        ],
+                        encouragement: "Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next. You've worked hard to get here, and with a few targeted adjustments, we are going to improve. Fod denge! 🚀"
+                    },
+                    'NEET': {
+                        strongAreas: [
+                            "Human Physiology and Ecology sections scored almost full marks.",
+                            "Inorganic Chemistry block chemistry trends are well-remembered."
+                        ],
+                        focusAreas: [
+                            "Genetics numericals and Pedigree analysis.",
+                            "Physics Electrostatics and Mechanics formula derivations."
+                        ],
+                        actionPlan: [
+                            "Practice 15 genetics crosses and pedigree charts to master finding genotypes under exam pressure.",
+                            "Write down all electrostatics formulas in a separate cheat sheet and solve 20 MCQ questions.",
+                            "Do a dedicated revision session for Biomolecules to strengthen recall of pathways."
+                        ],
+                        encouragement: "Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next. You've worked hard to get here, and with a few targeted adjustments, we are going to improve. Fod denge! 🚀"
+                    },
+                    'BOARDS': {
+                        strongAreas: [
+                            "English grammar and long answer formatting is excellent.",
+                            "Social Science history dates and map marking are fully accurate."
+                        ],
+                        focusAreas: [
+                            "Mathematics coordinate geometry and trigonometry proofs.",
+                            "Science chemical equation balancing and definitions."
+                        ],
+                        actionPlan: [
+                            "Write out chemical equation balancing steps and practice at least 15 textbook equations.",
+                            "Draw and memorize the basic trigonometric ratios tables and solve past board proof questions.",
+                            "Practice writing answers within the prescribed word limits under self-timed conditions."
+                        ],
+                        encouragement: "Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next. You've worked hard to get here, and with a few targeted adjustments, we are going to improve. Fod denge! 🚀"
+                    }
+                };
+
+                const data = mockResponses[targetExam] || {
+                    strongAreas: [
+                        "Strong conceptual understanding in core fundamental topics.",
+                        "Good accuracy on easy and medium-difficulty question categories."
+                    ],
+                    focusAreas: [
+                        "Time management (ran out of time near the end of the paper).",
+                        "Calculation accuracy in multi-step equations."
+                    ],
+                    actionPlan: [
+                        "Highlight all minor calculation steps in your practice session to identify where you rush.",
+                        "Use a stopwatch to solve standard problems, aiming for less than 2 minutes per question.",
+                        "Discuss key weak conceptual areas with a mentor or peer to get a fresh perspective."
+                    ],
+                    encouragement: "Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next. You've worked hard to get here, and with a few targeted adjustments, we are going to improve. Fod denge! 🚀"
+                };
+
+                displayAnalysis(data);
+                
+                loading.classList.add('hidden');
+                results.classList.remove('hidden');
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const res = await fetch('/api/v1/analyzer/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const errText = await res.text();
+                    alert("Analysis failed: " + errText);
+                    return;
+                }
+
+                const data = await res.json();
+                displayAnalysis(data);
+                results.classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred during paper analysis. Please verify your connection.");
+            } finally {
+                loading.classList.add('hidden');
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function displayAnalysis(data) {
+            document.getElementById('mentorEncouragement').textContent = data.encouragement;
+            
+            const strongList = document.getElementById('strongAreasList');
+            strongList.innerHTML = data.strongAreas.map(area => `
+                <li class="flex items-start gap-2 text-slate-700 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100/30">
+                    <i data-lucide="check" class="text-emerald-600 h-4 w-4 mt-0.5 flex-shrink-0"></i>
+                    <span>${escapeHTML(area)}</span>
+                </li>
+            `).join('');
+
+            const focusList = document.getElementById('focusAreasList');
+            focusList.innerHTML = data.focusAreas.map(area => `
+                <li class="flex items-start gap-2 text-slate-700 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100/30">
+                    <i data-lucide="arrow-right" class="text-rose-600 h-4 w-4 mt-0.5 flex-shrink-0"></i>
+                    <span>${escapeHTML(area)}</span>
+                </li>
+            `).join('');
+
+            const actionSteps = document.getElementById('actionPlanSteps');
+            actionSteps.innerHTML = data.actionPlan.map((step, idx) => `
+                <div class="flex gap-4">
+                    <div class="h-8 w-8 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
+                        ${idx + 1}
+                    </div>
+                    <div class="space-y-1.5 mt-0.5">
+                        <h4 class="font-outfit text-sm font-bold text-slate-800">Action Step ${idx + 1}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-semibold">${escapeHTML(step)}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
         }
 
         // Escape string HTML to prevent local script execution
