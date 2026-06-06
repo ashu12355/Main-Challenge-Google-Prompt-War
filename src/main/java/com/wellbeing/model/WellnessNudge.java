@@ -3,8 +3,13 @@ package com.wellbeing.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing AI-generated personalized wellness nudges.
+ */
 @Entity
-@Table(name = "wellness_nudges")
+@Table(name = "wellness_nudges", indexes = {
+    @Index(name = "idx_wellness_nudges_user_timestamp", columnList = "user_id, timestamp")
+})
 public class WellnessNudge {
 
     @Id

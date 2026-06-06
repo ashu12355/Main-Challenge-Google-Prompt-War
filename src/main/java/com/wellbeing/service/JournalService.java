@@ -1,39 +1,32 @@
 package com.wellbeing.service;
 
 import com.wellbeing.model.Journal;
-import com.wellbeing.model.User;
-import com.wellbeing.repository.JournalRepository;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
-@Service
-public class JournalService {
+/**
+ * Service interface for Student Reflection Journal operations.
+ */
+public interface JournalService {
 
-    @Autowired
-    private JournalRepository journalRepository;
+    /**
+     * Sanitizes and saves a student reflection journal entry.
+     *
+     * @param entryText the journal text
+     * @return the saved Journal entity
+     */
+    Journal saveJournal(String entryText);
 
-    @Autowired
-    private UserService userService;
+    /**
+     * Retrieves all saved journal entries for the current authenticated user.
+     *
+     * @return list of journal entries
+     */
+    List<Journal> getJournals();
 
-    @Transactional
-    public Journal saveJournal(String entryText) {
-        User user = userService.getCurrentUser();
-
-        // XSS Prevention: Sanitize input by stripping all HTML/Script tags
-        String sanitizedText = Jsoup.clean(entryText, Safelist.none());
-
-        Journal journal = new Journal(user, sanitizedText);
-        return journalRepository.save(journal);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Journal> getJournals() {
-        User user = userService.getCurrentUser();
-        return journalRepository.findByUserOrderByCreationDateDesc(user);
-    }
+    /**
+     * Generates 3 dynamic, context-aware prompts for the guided reflection journal.
+     *
+     * @return list of 3 prompt strings
+     */
+    List<String> getJournalPrompts();
 }

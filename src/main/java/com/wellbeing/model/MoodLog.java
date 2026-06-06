@@ -3,6 +3,9 @@ package com.wellbeing.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing logged mood states and stress triggers.
+ */
 @Entity
 @Table(name = "mood_logs", indexes = {
     @Index(name = "idx_mood_logs_user_timestamp", columnList = "user_id, timestamp")
@@ -25,6 +28,10 @@ public class MoodLog {
     @Enumerated(EnumType.STRING)
     private TriggerTag triggerTag;
 
+    @Column(name = "check_in_period", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CheckInPeriod checkInPeriod = CheckInPeriod.MORNING;
+
     @Column(name = "timestamp", nullable = false, updatable = false)
     private LocalDateTime timestamp;
 
@@ -41,6 +48,14 @@ public class MoodLog {
         this.user = user;
         this.moodScore = moodScore;
         this.triggerTag = triggerTag;
+        this.checkInPeriod = CheckInPeriod.MORNING;
+    }
+
+    public MoodLog(User user, MoodType moodScore, TriggerTag triggerTag, CheckInPeriod checkInPeriod) {
+        this.user = user;
+        this.moodScore = moodScore;
+        this.triggerTag = triggerTag;
+        this.checkInPeriod = checkInPeriod;
     }
 
     public Long getId() {
@@ -73,6 +88,14 @@ public class MoodLog {
 
     public void setTriggerTag(TriggerTag triggerTag) {
         this.triggerTag = triggerTag;
+    }
+
+    public CheckInPeriod getCheckInPeriod() {
+        return checkInPeriod;
+    }
+
+    public void setCheckInPeriod(CheckInPeriod checkInPeriod) {
+        this.checkInPeriod = checkInPeriod;
     }
 
     public LocalDateTime getTimestamp() {

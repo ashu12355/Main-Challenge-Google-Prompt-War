@@ -3,8 +3,13 @@ package com.wellbeing.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing logged reflection journal entries.
+ */
 @Entity
-@Table(name = "journals")
+@Table(name = "journals", indexes = {
+    @Index(name = "idx_journals_user_creation_date", columnList = "user_id, creation_date")
+})
 public class Journal {
 
     @Id

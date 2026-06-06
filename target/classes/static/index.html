@@ -49,6 +49,14 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(99, 102, 241, 0.5);
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleUp {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="h-full text-slate-700 flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900 overflow-x-hidden">
@@ -89,7 +97,6 @@
     <!-- Main Workspace -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         
-        <!-- ================= AUTH SCREEN ================= -->
         <!-- ================= AUTH SCREEN ================= -->
         <section id="authSection" class="max-w-md mx-auto my-12 bg-white border border-slate-200 p-8 rounded-2xl shadow-xl relative overflow-hidden transition-all duration-500">
             <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-500"></div>
@@ -175,6 +182,14 @@
                             <i data-lucide="file-key-2" class="h-5 w-5"></i>
                             <span>Paper Analyzer</span>
                         </button>
+                        <button type="button" id="tab_weekly_report" onclick="switchDashboardTab('weekly_report')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800">
+                            <i data-lucide="calendar-check" class="h-5 w-5"></i>
+                            <span>Weekly Report</span>
+                        </button>
+                        <button type="button" onclick="openReliefModal()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold bg-rose-50 border border-rose-100 text-rose-700 hover:bg-rose-100 transition-all">
+                            <i data-lucide="heart-pulse" class="h-5 w-5 text-rose-600"></i>
+                            <span>Need Relief Now? 🧘</span>
+                        </button>
                     </div>
                     
                     <div class="bg-gradient-to-tr from-indigo-50/50 to-emerald-50/30 border border-indigo-100/60 p-5 rounded-2xl shadow-sm space-y-3">
@@ -200,7 +215,7 @@
                                 <div id="aiNudgeContent">
                                     <!-- Nudge block -->
                                     <div class="text-slate-600 text-sm leading-relaxed font-medium" id="nudgeText">
-                                        Click below to generate your personalized AI-driven wellness advice tailored to your target exam timeline.
+                                        Click below to generate your personalized AI-driven wellness advice tailored to your exam target.
                                     </div>
                                 </div>
                                 <!-- Skeleton Loader -->
@@ -221,6 +236,29 @@
                             <!-- Left Block: Logging Inputs (Mood & Reflection) -->
                             <div class="lg:col-span-1 space-y-8">
                                 
+                                <!-- Gamified Streak Widget -->
+                                <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm space-y-4">
+                                    <div class="flex justify-between items-center">
+                                        <h2 class="font-outfit text-lg font-bold text-slate-800 flex items-center gap-2">
+                                            <i data-lucide="zap" class="text-amber-500 h-5 w-5 fill-amber-100"></i>
+                                            <span>Your Streak</span>
+                                        </h2>
+                                        <span id="streakDays" class="px-2.5 py-1 bg-amber-50 border border-amber-100 text-amber-700 text-xs font-bold rounded-lg">0 Days ⚡</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between text-[11px] font-bold text-slate-500">
+                                            <span>Milestone Progress</span>
+                                            <span id="streakNextMilestone">Target: 7 Days</span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200">
+                                            <div id="streakProgressBar" class="bg-gradient-to-r from-amber-400 to-amber-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div id="badgeContainer" class="flex flex-wrap gap-2 pt-1">
+                                        <!-- Badges render here -->
+                                    </div>
+                                </div>
+
                                 <!-- Mood Tracker Log Form -->
                                 <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm relative">
                                     <h2 class="font-outfit text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
@@ -229,6 +267,17 @@
                                     </h2>
 
                                     <form id="moodForm" onsubmit="handleMoodSubmit(event)" class="space-y-5">
+                                        <!-- Time-of-day period check-in -->
+                                        <div>
+                                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Select Check-in Period</span>
+                                            <div class="flex p-0.5 bg-slate-100 border border-slate-200 rounded-xl">
+                                                <button type="button" id="period_MORNING" onclick="selectPeriod('MORNING')" class="w-1/3 py-2 text-xs font-bold rounded-lg transition-all bg-white text-indigo-700 shadow">Morning</button>
+                                                <button type="button" id="period_POST_STUDY" onclick="selectPeriod('POST_STUDY')" class="w-1/3 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900">Post-Study</button>
+                                                <button type="button" id="period_NIGHT" onclick="selectPeriod('NIGHT')" class="w-1/3 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900">Night</button>
+                                            </div>
+                                            <input type="hidden" id="selectedPeriod" value="MORNING">
+                                        </div>
+
                                         <!-- Emojis Accessible Selectors -->
                                         <div>
                                             <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Select Current State</span>
@@ -239,11 +288,11 @@
                                                 </button>
                                                 <button type="button" onclick="selectMood('ANXIOUS')" id="mood_ANXIOUS" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Thoda tension hai mood">
                                                     <span class="text-2xl mb-1">😟</span>
-                                                    <span class="text-xs font-bold text-slate-700">Thoda tension hai</span>
+                                                    <span class="text-xs font-bold text-slate-700">Thoda tension</span>
                                                 </button>
                                                 <button type="button" onclick="selectMood('FRUSTRATED')" id="mood_FRUSTRATED" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Dimag kharab hai mood">
                                                     <span class="text-2xl mb-1">🤯</span>
-                                                    <span class="text-xs font-bold text-slate-700">Dimag kharab hai</span>
+                                                    <span class="text-xs font-bold text-slate-700">Dimag kharab</span>
                                                 </button>
                                                 <button type="button" onclick="selectMood('BURNED_OUT')" id="mood_BURNED_OUT" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Thak gaya hu mood">
                                                     <span class="text-2xl mb-1">🛌</span>
@@ -257,10 +306,11 @@
                                         <div>
                                             <label for="triggerTag" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Major Stress Trigger</label>
                                             <select id="triggerTag" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                                                <option value="MOCK_TEST">Mock Test</option>
+                                                <option value="SYLLABUS">Syllabus</option>
+                                                <option value="PARENT_PRESSURE">Parent Pressure</option>
                                                 <option value="COACHING_CLASS_BACKLOG">Coaching Class Backlog</option>
-                                                <option value="MOCK_TEST_PERCENTILE">Mock Test Percentile</option>
                                                 <option value="PEER_COMPARISON">Sharma Ji Ka Beta / Peer Comparison</option>
-                                                <option value="FAMILY_EXPECTATIONS">Family & Relatives Expectations</option>
                                                 <option value="HOMESICKNESS">Hostel Food / Homesickness</option>
                                             </select>
                                         </div>
@@ -275,16 +325,16 @@
                                 <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
                                     <h2 class="font-outfit text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
                                         <i data-lucide="book-heart" class="text-indigo-600 h-5 w-5"></i>
-                                        <span>Evening Reflection</span>
+                                        <span>Evening Ritual Journal</span>
                                     </h2>
                                     <p class="text-slate-500 text-xs mb-5 font-medium">Answer tailored guided questions to limit negative rumination.</p>
 
                                     <form id="journalForm" onsubmit="handleJournalSubmit(event)" class="space-y-4">
                                         <div>
-                                            <label for="journalText" id="journalPromptLabel" class="block text-sm text-indigo-700 font-bold mb-2 leading-relaxed">
-                                                What is one mock syllabus milestone you made progress on today, and how will you wind down tonight?
+                                            <label for="journalText" id="journalPromptLabel" class="block text-xs text-indigo-700 font-bold mb-2 leading-relaxed">
+                                                What is one study milestone you made progress on today, and how will you wind down tonight?
                                             </label>
-                                            <textarea id="journalText" required rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" placeholder="Write down your reflections (we automatically filter HTML script tags)..."></textarea>
+                                            <textarea id="journalText" required rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" placeholder="Write down your reflections..."></textarea>
                                         </div>
 
                                         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -474,6 +524,59 @@
                         </div>
                     </div>
 
+                    <!-- View 3: Weekly Progress Report -->
+                    <div id="weeklyReportView" class="hidden space-y-8">
+                        <div class="bg-gradient-to-r from-emerald-50 to-indigo-50/50 border border-emerald-100 rounded-2xl p-6 relative overflow-hidden shadow-sm">
+                            <h2 class="font-outfit text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">Sunday Ritual: Weekly Progress</h2>
+                            <p class="text-slate-500 text-sm font-medium">Review your emotional patterns, streaking effort, and customized recommendations for the coming week.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Mood Trends -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+                                <h3 class="font-outfit text-base font-bold text-slate-800 flex items-center gap-2 mb-4">
+                                    <i data-lucide="trending-up" class="text-indigo-600 h-5 w-5"></i>
+                                    <span>Weekly Mood Trends</span>
+                                </h3>
+                                <div id="weeklyMoodList" class="space-y-3">
+                                    <!-- Dynamic -->
+                                </div>
+                            </div>
+                            <!-- Triggers & Streaks -->
+                            <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-outfit text-base font-bold text-slate-800 flex items-center gap-2 mb-4">
+                                        <i data-lucide="alert-circle" class="text-indigo-600 h-5 w-5"></i>
+                                        <span>Top Stress Triggers</span>
+                                    </h3>
+                                    <div id="weeklyTriggerList" class="space-y-3">
+                                        <!-- Dynamic -->
+                                    </div>
+                                </div>
+                                <div class="border-t border-slate-100 pt-4 mt-4">
+                                    <div class="flex justify-between items-center text-xs">
+                                        <span class="text-slate-500 font-semibold">Weekly Journal Streak:</span>
+                                        <span id="weeklyJournalStreak" class="font-bold text-emerald-600">0 Days</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Focus Recommendation -->
+                        <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-6">
+                            <h3 class="font-outfit text-base font-bold text-slate-800 flex items-center gap-2 mb-3">
+                                <i data-lucide="sparkles" class="text-indigo-600 h-5 w-5"></i>
+                                <span>Study Focus Recommendation</span>
+                            </h3>
+                            <p id="weeklyRecommendation" class="text-slate-600 text-sm font-medium leading-relaxed italic">
+                                Loading recommendation...
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </section>
 
     </main>
@@ -485,6 +588,63 @@
         </div>
     </footer>
 
+    <!-- ================= RELIEF MODAL ================= -->
+    <div id="reliefModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 max-w-lg w-full rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 relative">
+            <div class="absolute top-0 left-0 w-full h-[3px] bg-rose-500"></div>
+            
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-outfit text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="heart-pulse" class="text-rose-600 h-5 w-5"></i>
+                    <span>Micro-Relief Session 🧘</span>
+                </h3>
+                <button type="button" onclick="closeReliefModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 space-y-6">
+                <!-- Selector tabs -->
+                <div class="flex p-1 bg-slate-100 border border-slate-200 rounded-xl">
+                    <button type="button" id="relief_box_btn" onclick="switchReliefSession('box')" class="w-1/2 py-2 text-xs font-bold rounded-lg bg-rose-600 text-white shadow transition-all">Box Breathing</button>
+                    <button type="button" id="relief_ground_btn" onclick="switchReliefSession('ground')" class="w-1/2 py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all">5-4-3-2-1 Grounding</button>
+                </div>
+                
+                <!-- Box Breathing View -->
+                <div id="boxBreathingView" class="flex flex-col items-center justify-center py-6 space-y-6">
+                    <div class="relative flex items-center justify-center h-48 w-48">
+                        <!-- Breathing circle outer ring -->
+                        <div class="absolute inset-0 rounded-full border border-rose-100 bg-rose-50/20 scale-125"></div>
+                        <!-- Breathing circle -->
+                        <div id="breathingCircle" class="h-28 w-28 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 shadow-lg shadow-rose-200 flex items-center justify-center text-white font-bold transition-all duration-1000 ease-in-out">
+                            Ready
+                        </div>
+                    </div>
+                    <div class="text-center space-y-1">
+                        <h4 id="breathingStatus" class="font-outfit text-base font-bold text-slate-800">Ready to start</h4>
+                        <p class="text-xs text-slate-500 font-semibold">Inhale, hold, exhale, hold. Follow the rhythm.</p>
+                    </div>
+                    <button type="button" id="startBreathingBtn" onclick="toggleBreathing()" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">Start Breathing</button>
+                </div>
+                
+                <!-- Grounding View -->
+                <div id="groundingView" class="hidden py-4 space-y-4">
+                    <div id="groundingStepCard" class="bg-rose-50/20 border border-rose-100/60 p-6 rounded-2xl space-y-3 text-center animate-[scaleUp_0.3s_ease-out]">
+                        <span id="groundingNumber" class="text-4xl block">5</span>
+                        <h4 id="groundingInstruction" class="font-outfit text-base font-bold text-slate-800">Things you can see around you</h4>
+                        <p class="text-xs text-slate-500 font-semibold leading-relaxed">Look around the room and name 5 distinct physical items in your mind.</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <button type="button" id="groundPrevBtn" onclick="groundStep(-1)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all" disabled>Back</button>
+                        <button type="button" id="groundNextBtn" onclick="groundStep(1)" class="px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
         // Global State
@@ -494,6 +654,13 @@
         let currentSelectedMood = '';
         let chartInstance = null;
         let selectedFile = null;
+        let previousBadgesCount = 0;
+
+        // Micro-relief variables
+        let breathingTimer = null;
+        let breathingPhase = 0; // 0: inhale, 1: hold, 2: exhale, 3: hold
+        let isBreathingActive = false;
+        let groundingStep = 5;
 
         // Offline Demo Mode state
         let isDemoMode = localStorage.getItem('is_demo_mode') === 'true';
@@ -503,21 +670,29 @@
         function switchDashboardTab(tab) {
             const wellbeingView = document.getElementById('wellbeingView');
             const analyzerView = document.getElementById('analyzerView');
+            const weeklyReportView = document.getElementById('weeklyReportView');
             const tabWellbeing = document.getElementById('tab_wellbeing');
             const tabAnalyzer = document.getElementById('tab_analyzer');
+            const tabWeeklyReport = document.getElementById('tab_weekly_report');
+
+            wellbeingView.classList.add('hidden');
+            analyzerView.classList.add('hidden');
+            weeklyReportView.classList.add('hidden');
+            
+            tabWellbeing.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
+            tabAnalyzer.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
+            tabWeeklyReport.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
 
             if (tab === 'wellbeing') {
                 wellbeingView.classList.remove('hidden');
-                analyzerView.classList.add('hidden');
-                
                 tabWellbeing.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-50 border border-indigo-100 text-indigo-700";
-                tabAnalyzer.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
-            } else {
-                wellbeingView.classList.add('hidden');
+            } else if (tab === 'analyzer') {
                 analyzerView.classList.remove('hidden');
-                
                 tabAnalyzer.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-50 border border-indigo-100 text-indigo-700";
-                tabWellbeing.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-50 border border-transparent hover:text-slate-800";
+            } else if (tab === 'weekly_report') {
+                weeklyReportView.classList.remove('hidden');
+                tabWeeklyReport.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-50 border border-indigo-100 text-indigo-700";
+                fetchWeeklyReport();
             }
             lucide.createIcons();
         }
@@ -536,10 +711,10 @@
             // Seed initial data
             if (demoLogs.length === 0) {
                 demoLogs = [
-                    { id: 1, mood: 'HIGH_MOTIVATION', triggerTag: 'COACHING_CLASS_BACKLOG', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 2, mood: 'FRUSTRATED', triggerTag: 'HOMESICKNESS', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 3, mood: 'ANXIOUS', triggerTag: 'PEER_COMPARISON', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
-                    { id: 4, mood: 'BURNED_OUT', triggerTag: 'MOCK_TEST_PERCENTILE', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
+                    { id: 1, mood: 'HIGH_MOTIVATION', triggerTag: 'COACHING_CLASS_BACKLOG', checkInPeriod: 'MORNING', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 2, mood: 'FRUSTRATED', triggerTag: 'HOMESICKNESS', checkInPeriod: 'POST_STUDY', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 3, mood: 'ANXIOUS', triggerTag: 'PEER_COMPARISON', checkInPeriod: 'NIGHT', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 4, mood: 'BURNED_OUT', triggerTag: 'MOCK_TEST', checkInPeriod: 'NIGHT', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
                 ];
                 localStorage.setItem('demo_logs', JSON.stringify(demoLogs));
             }
@@ -563,8 +738,8 @@
 
         const moodEmoji = {
             'HIGH_MOTIVATION': '🚀 Fod denge!',
-            'ANXIOUS': '😟 Thoda tension hai',
-            'FRUSTRATED': '🤯 Dimag kharab hai',
+            'ANXIOUS': '😟 Thoda tension',
+            'FRUSTRATED': '🤯 Dimag kharab',
             'BURNED_OUT': '🛌 Thak gaya hu'
         };
 
@@ -572,8 +747,11 @@
             'COACHING_CLASS_BACKLOG': 'Coaching Class Backlog',
             'MOCK_TEST_PERCENTILE': 'Mock Test Percentile',
             'PEER_COMPARISON': 'Sharma Ji Ka Beta / Peer Comparison',
-            'FAMILY_EXPECTATIONS': 'Family & Relatives Expectations',
-            'HOMESICKNESS': 'Hostel Food / Homesickness'
+            'FAMILY_EXPECTATIONS': 'Family Expectations',
+            'HOMESICKNESS': 'Hostel Food / Homesickness',
+            'MOCK_TEST': 'Mock Test',
+            'SYLLABUS': 'Syllabus Completion',
+            'PARENT_PRESSURE': 'Parent Pressure'
         };
 
         // On Load
@@ -617,6 +795,8 @@
             // Load initial API data
             fetchAnalytics();
             fetchJournals();
+            fetchPrompts();
+            fetchStreak();
         }
 
         function toggleAuthTab(tab) {
@@ -640,14 +820,7 @@
 
         // Custom guided reflection questions based on milestones/exam
         function updateJournalPrompts() {
-            const label = document.getElementById('journalPromptLabel');
-            if (targetExam === 'JEE' || targetExam === 'NEET') {
-                label.textContent = "Which subject topic (e.g. Physics backlog or Biology mock syllabus) felt stressful today, what is one key formula or concept you consolidated, and how will you wind down tonight?";
-            } else if (targetExam === 'UPSC') {
-                label.textContent = "How did you manage mock answer writing stress today, how many hours did you revise general studies, and what is your relaxation activity for tonight?";
-            } else {
-                label.textContent = "What is one study milestone you made progress on today, what stress factors did you overcome, and how will you wind down tonight?";
-            }
+            fetchPrompts();
         }
 
         // Auth Submit handler
@@ -735,6 +908,14 @@
             activeBtn.setAttribute('aria-checked', 'true');
         }
 
+        function selectPeriod(period) {
+            document.getElementById('selectedPeriod').value = period;
+            document.querySelectorAll('[id^="period_"]').forEach(btn => {
+                btn.className = "w-1/3 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900";
+            });
+            document.getElementById(`period_${period}`).className = "w-1/3 py-2 text-xs font-bold rounded-lg transition-all bg-white text-indigo-700 shadow";
+        }
+
         // Log Mood Submit
         async function handleMoodSubmit(e) {
             e.preventDefault();
@@ -744,11 +925,14 @@
             }
 
             const trigger = document.getElementById('triggerTag').value;
+            const period = document.getElementById('selectedPeriod').value;
+
             if (isDemoMode) {
                 const newLog = {
                     id: demoLogs.length + 1,
                     mood: currentSelectedMood,
                     triggerTag: trigger,
+                    checkInPeriod: period,
                     timestamp: new Date().toISOString()
                 };
                 demoLogs.push(newLog);
@@ -763,6 +947,8 @@
                 });
 
                 fetchAnalytics();
+                fetchStreak();
+                fetchPrompts();
                 return;
             }
 
@@ -773,7 +959,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ mood: currentSelectedMood, triggerTag: trigger })
+                    body: JSON.stringify({ mood: currentSelectedMood, triggerTag: trigger, checkInPeriod: period })
                 });
 
                 if (!res.ok) {
@@ -790,6 +976,8 @@
                 });
 
                 fetchAnalytics();
+                fetchStreak();
+                fetchPrompts();
             } catch (err) {
                 console.error(err);
             }
@@ -811,6 +999,7 @@
 
                 document.getElementById('journalText').value = '';
                 fetchJournals();
+                fetchStreak();
                 fetchAnalytics(); // Refresh logs distribution
                 return;
             }
@@ -832,6 +1021,7 @@
 
                 document.getElementById('journalText').value = '';
                 fetchJournals();
+                fetchStreak();
                 fetchAnalytics(); // Refresh logs distribution
             } catch (err) {
                 console.error(err);
@@ -1066,11 +1256,6 @@
                         "NCERT biology diagrams need active recall. Put on some lo-fi Bollywood beats in the background and biology revision will flow naturally.",
                         "Tired of hostels or feeling homesick? Call a family member for 5 minutes, then tackle your physics formulas.",
                         "Do 2 minutes of Anulom Vilom breathing. It eases mock exam percentile anxiety and refreshes your focus."
-                    ],
-                    'UPSC': [
-                        "GS answer writing backlog can feel overwhelming. Take a walk on the terrace, clear your mind, and make a structured list.",
-                        "Sharma Ji Ka Beta comparison doesn't define your UPSC journey. Fuel your prep with a hot cup of cutting chai.",
-                        "Tune in to calm lo-fi Bollywood tunes while writing answers to keep your pace steady and mind peaceful."
                     ]
                 };
                 
@@ -1225,22 +1410,6 @@
                             "Do a dedicated revision session for Biomolecules to strengthen recall of pathways."
                         ],
                         encouragement: "Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next. You've worked hard to get here, and with a few targeted adjustments, we are going to improve. Fod denge! 🚀"
-                    },
-                    'BOARDS': {
-                        strongAreas: [
-                            "English grammar and long answer formatting is excellent.",
-                            "Social Science history dates and map marking are fully accurate."
-                        ],
-                        focusAreas: [
-                            "Mathematics coordinate geometry and trigonometry proofs.",
-                            "Science chemical equation balancing and definitions."
-                        ],
-                        actionPlan: [
-                            "Write out chemical equation balancing steps and practice at least 15 textbook equations.",
-                            "Draw and memorize the basic trigonometric ratios tables and solve past board proof questions.",
-                            "Practice writing answers within the prescribed word limits under self-timed conditions."
-                        ],
-                        encouragement: "Hey, please don't get stressed over these numbers. A mock test is just a tool to help us identify what we need to focus on next. You've worked hard to get here, and with a few targeted adjustments, we are going to improve. Fod denge! 🚀"
                     }
                 };
 
@@ -1282,7 +1451,7 @@
 
                 if (!res.ok) {
                     const errText = await res.text();
-                    alert("Analysis failed: " + errText);
+                    alert("Analysis failed (Status " + res.status + "): " + errText);
                     return;
                 }
 
@@ -1332,6 +1501,291 @@
             `).join('');
 
             lucide.createIcons();
+        }
+
+        // Fetch guided prompts
+        async function fetchPrompts() {
+            const label = document.getElementById('journalPromptLabel');
+            if (isDemoMode) {
+                const latestMood = demoLogs.length > 0 ? demoLogs[demoLogs.length - 1].mood : '';
+                if (latestMood === 'ANXIOUS') {
+                    label.innerHTML = `<span class="block text-indigo-800 font-bold mb-1">1. What is one specific study task causing tension right now?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">2. Write down 2 things that went well today, no matter how small.</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">3. What reassuring advice would you give a friend feeling this way?</span>`;
+                } else if (latestMood === 'BURNED_OUT') {
+                    label.innerHTML = `<span class="block text-indigo-800 font-bold mb-1">1. Which study task took the most energy out of you today?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">2. How can you rest your mind tonight without screens?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">3. How can you simplify your schedule tomorrow to breathe easier?</span>`;
+                } else if (latestMood === 'FRUSTRATED') {
+                    label.innerHTML = `<span class="block text-indigo-800 font-bold mb-1">1. What syllabus topic or backlog tested your patience today?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">2. What concept did you understand well despite the frustration?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">3. What is one healthy way you can vent or relax tonight?</span>`;
+                } else {
+                    label.innerHTML = `<span class="block text-indigo-800 font-bold mb-1">1. What is one mock syllabus milestone you made progress on today?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">2. How did you maintain your motivation today?</span>
+                                       <span class="block text-indigo-800 font-bold mb-1">3. How will you reward yourself tonight to sustain this energy?</span>`;
+                }
+                return;
+            }
+            try {
+                const res = await fetch('/api/v1/journals/prompts', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+                const prompts = await res.json();
+                label.innerHTML = prompts.map((p, idx) => `<span class="block text-indigo-800 font-bold mb-1">${idx + 1}. ${escapeHTML(p)}</span>`).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Streak details
+        async function fetchStreak() {
+            if (isDemoMode) {
+                const counts = demoLogs.length;
+                const badges = [];
+                if (counts >= 3) badges.push("3-Day Novice 🌱");
+                if (counts >= 7) badges.push("7-Day Warrior 🛡️");
+                if (counts >= 21) badges.push("21-Day Yogi 🧘");
+                if (counts >= 30) badges.push("30-Day Fod-Denge Champion 🏆");
+                
+                let progress = 0;
+                if (counts < 7) { progress = (counts * 100) / 7; }
+                else if (counts < 21) { progress = ((counts - 7) * 100) / 14; }
+                else { progress = ((counts - 21) * 100) / 9; }
+                if (progress > 100) progress = 100;
+
+                renderStreak({ currentStreak: counts, longestStreak: Math.max(counts, 4), progressPercentage: Math.round(progress), unlockedBadges: badges });
+                return;
+            }
+            try {
+                const res = await fetch('/api/v1/streaks/summary', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+                const streakData = await res.json();
+                renderStreak(streakData);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderStreak(data) {
+            document.getElementById('streakDays').textContent = `${data.currentStreak} Days ⚡`;
+            document.getElementById('streakProgressBar').style.width = `${data.progressPercentage}%`;
+            
+            let targetText = "Target: 7 Days";
+            if (data.currentStreak >= 30) targetText = "Streak Master! 🎉";
+            else if (data.currentStreak >= 21) targetText = "Target: 30 Days";
+            else if (data.currentStreak >= 7) targetText = "Target: 21 Days";
+            document.getElementById('streakNextMilestone').textContent = targetText;
+
+            const badgeContainer = document.getElementById('badgeContainer');
+            if (data.unlockedBadges.length === 0) {
+                badgeContainer.innerHTML = `<span class="text-[10px] text-slate-400 font-semibold italic">Keep logging daily to unlock badges!</span>`;
+            } else {
+                badgeContainer.innerHTML = data.unlockedBadges.map(badge => `
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-bold shadow-sm animate-[fadeIn_0.3s_ease-out]">
+                        <span>${badge}</span>
+                    </span>
+                `).join('');
+            }
+
+            if (data.unlockedBadges.length > previousBadgesCount) {
+                const newBadge = data.unlockedBadges[data.unlockedBadges.length - 1];
+                if (previousBadgesCount > 0) {
+                    triggerMilestoneAnimation(newBadge);
+                }
+                previousBadgesCount = data.unlockedBadges.length;
+            }
+        }
+
+        function triggerMilestoneAnimation(badgeTitle) {
+            const body = document.body;
+            const div = document.createElement('div');
+            div.className = "fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-md animate-[fadeIn_0.3s_ease-out]";
+            div.innerHTML = `
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 max-w-sm w-full text-center space-y-4 shadow-2xl relative overflow-hidden animate-[scaleUp_0.4s_ease-out]">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    <div class="text-6xl animate-bounce">🎉</div>
+                    <h3 class="font-outfit text-xl font-bold text-slate-800">Milestone Unlocked!</h3>
+                    <p class="text-xs text-slate-500 font-semibold leading-relaxed">Congratulations! You unlocked the badge:</p>
+                    <div class="inline-block px-4 py-2 bg-amber-50 border border-amber-200 text-amber-800 font-bold rounded-2xl text-sm shadow">
+                        ${badgeTitle}
+                    </div>
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all">Fod Denge! 🚀</button>
+                </div>
+            `;
+            body.appendChild(div);
+        }
+
+        // Micro-relief sessions
+        function openReliefModal() {
+            document.getElementById('reliefModal').classList.remove('hidden');
+            switchReliefSession('box');
+            lucide.createIcons();
+        }
+
+        function closeReliefModal() {
+            document.getElementById('reliefModal').classList.add('hidden');
+            stopBreathing();
+        }
+
+        function switchReliefSession(type) {
+            const boxBtn = document.getElementById('relief_box_btn');
+            const groundBtn = document.getElementById('relief_ground_btn');
+            const boxView = document.getElementById('boxBreathingView');
+            const groundView = document.getElementById('groundingView');
+
+            if (type === 'box') {
+                boxBtn.className = "w-1/2 py-2 text-xs font-bold rounded-lg bg-rose-600 text-white shadow transition-all";
+                groundBtn.className = "w-1/2 py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+                boxView.classList.remove('hidden');
+                groundView.classList.add('hidden');
+            } else {
+                groundBtn.className = "w-1/2 py-2 text-xs font-bold rounded-lg bg-rose-600 text-white shadow transition-all";
+                boxBtn.className = "w-1/2 py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+                boxView.classList.add('hidden');
+                groundView.classList.remove('hidden');
+                groundStep(0);
+            }
+        }
+
+        function toggleBreathing() {
+            if (isBreathingActive) {
+                stopBreathing();
+            } else {
+                startBreathing();
+            }
+        }
+
+        function startBreathing() {
+            isBreathingActive = true;
+            document.getElementById('startBreathingBtn').textContent = "Stop Session";
+            document.getElementById('startBreathingBtn').className = "px-6 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-xl shadow-md transition-all";
+            breathingPhase = 0;
+            runBreathingCycle();
+            breathingTimer = setInterval(runBreathingCycle, 4000);
+        }
+
+        function stopBreathing() {
+            isBreathingActive = false;
+            clearInterval(breathingTimer);
+            document.getElementById('startBreathingBtn').textContent = "Start Breathing";
+            document.getElementById('startBreathingBtn').className = "px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition-all";
+            const circle = document.getElementById('breathingCircle');
+            circle.style.transform = "scale(1)";
+            circle.textContent = "Ready";
+            document.getElementById('breathingStatus').textContent = "Ready to start";
+        }
+
+        function runBreathingCycle() {
+            const circle = document.getElementById('breathingCircle');
+            const status = document.getElementById('breathingStatus');
+            
+            if (breathingPhase === 0) {
+                circle.style.transform = "scale(1.5)";
+                circle.textContent = "Inhale";
+                status.textContent = "Inhale through your nose (4s)";
+                breathingPhase = 1;
+            } else if (breathingPhase === 1) {
+                circle.style.transform = "scale(1.5)";
+                circle.textContent = "Hold";
+                status.textContent = "Hold your breath (4s)";
+                breathingPhase = 2;
+            } else if (breathingPhase === 2) {
+                circle.style.transform = "scale(1)";
+                circle.textContent = "Exhale";
+                status.textContent = "Exhale slowly (4s)";
+                breathingPhase = 3;
+            } else {
+                circle.style.transform = "scale(1)";
+                circle.textContent = "Hold";
+                status.textContent = "Hold empty breath (4s)";
+                breathingPhase = 0;
+            }
+        }
+
+        const groundingData = {
+            5: { title: "5 Things You Can See", text: "Look around you and name 5 distinct physical items in your immediate area.", number: "5" },
+            4: { title: "4 Things You Can Touch", text: "Reach out or think of 4 physical textures (e.g. keycaps, cotton shirt, wood desk).", number: "4" },
+            3: { title: "3 Things You Can Hear", text: "Close your eyes and identify 3 subtle sounds (e.g. fan hum, distant vehicle, wind).", number: "3" },
+            2: { title: "2 Things You Can Smell", text: "Breathe in deeply and note 2 distinct scents (e.g. coffee, paper notes, rain).", number: "2" },
+            1: { title: "1 Thing You Can Taste", text: "Focus on the physical sensation in your mouth and name 1 taste or clean finish.", number: "1" }
+        };
+
+        function groundStep(dir) {
+            if (dir === 0) {
+                groundingStep = 5;
+            } else {
+                groundingStep += dir;
+            }
+
+            if (groundingStep < 1) {
+                alert("Great job centering yourself! Take a slow breath.");
+                closeReliefModal();
+                return;
+            }
+
+            const step = groundingData[groundingStep];
+            document.getElementById('groundingNumber').textContent = step.number;
+            document.getElementById('groundingInstruction').textContent = step.title;
+            document.getElementById('groundingInstruction').nextElementSibling.textContent = step.text;
+
+            document.getElementById('groundPrevBtn').disabled = (groundingStep === 5);
+            document.getElementById('groundNextBtn').textContent = (groundingStep === 1) ? "Finish" : "Next";
+        }
+
+        // Sunday Ritual: Weekly Report
+        async function fetchWeeklyReport() {
+            if (isDemoMode) {
+                const counts = { HIGH_MOTIVATION: 0, ANXIOUS: 0, FRUSTRATED: 0, BURNED_OUT: 0 };
+                demoLogs.forEach(l => { counts[l.mood] = (counts[l.mood] || 0) + 1; });
+                const triggers = {};
+                demoLogs.forEach(l => { triggers[l.triggerTag] = (triggers[l.triggerTag] || 0) + 1; });
+                const topTriggers = Object.entries(triggers).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e => e[0]);
+                const journalStreak = demoReflections.length;
+                const recommendation = counts.ANXIOUS + counts.FRUSTRATED + counts.BURNED_OUT > 2
+                    ? "Aapne is hafte kafi exhaustion face kiya hai. Try to schedule 10-minute breaks after study modules and listen to calming lo-fi music."
+                    : "Great going! Balance your prep with cutting chai and short terrace walks. Fod denge! 🚀";
+                renderWeeklyReport({ moodTrends: counts, topTriggers, journalStreak, focusRecommendation: recommendation });
+                return;
+            }
+            try {
+                const res = await fetch('/api/v1/moods/weekly-report', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+                const report = await res.json();
+                renderWeeklyReport(report);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderWeeklyReport(report) {
+            const moodList = document.getElementById('weeklyMoodList');
+            const moods = Object.entries(report.moodTrends);
+            moodList.innerHTML = moods.map(([mood, count]) => `
+                <div class="flex justify-between items-center text-xs p-1.5 bg-slate-50 border border-slate-100 rounded-lg">
+                    <span class="font-medium text-slate-600">${moodEmoji[mood] || mood}</span>
+                    <span class="font-bold text-indigo-700">${count} times</span>
+                </div>
+            `).join('');
+
+            const triggerList = document.getElementById('weeklyTriggerList');
+            if (report.topTriggers.length === 0) {
+                triggerList.innerHTML = `<span class="text-xs text-slate-400">No triggers logged this week.</span>`;
+            } else {
+                triggerList.innerHTML = report.topTriggers.map((t, idx) => `
+                    <div class="flex justify-between items-center text-xs p-1.5 bg-slate-50 border border-slate-100 rounded-lg">
+                        <span class="font-medium text-slate-600">${idx + 1}. ${triggerNames[t] || t}</span>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('weeklyJournalStreak').textContent = `${report.journalStreak} Days`;
+            document.getElementById('weeklyRecommendation').textContent = report.focusRecommendation;
         }
 
         // Escape string HTML to prevent local script execution

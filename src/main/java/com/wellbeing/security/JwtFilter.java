@@ -30,20 +30,20 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+            String logMsg = "[JWT Filter] URI: " + request.getRequestURI() + ", Header: " + request.getHeader("Authorization") + "\n";
+            java.nio.file.Files.writeString(java.nio.file.Path.of("/Users/ashutoshmain/Ashutosh/MainChallangePromptWar/jwt_diagnostics.log"), logMsg, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND);
             if (jwt != null && jwtUtil.validateToken(jwt)) {
                 String username = jwtUtil.getUsernameFromToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
+            String err = "[JWT Filter] Exception: " + e.toString() + "\n";
+            try { java.nio.file.Files.writeString(java.nio.file.Path.of("/Users/ashutoshmain/Ashutosh/MainChallangePromptWar/jwt_diagnostics.log"), err, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND); } catch (Exception ignored) {}
             logger.error("Cannot set user authentication: {}", e);
         }
-
         filterChain.doFilter(request, response);
     }
 
