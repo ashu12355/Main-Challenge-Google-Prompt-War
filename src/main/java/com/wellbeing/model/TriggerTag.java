@@ -1,0 +1,5 @@
+package com.wellbeing.model;
+
+public enum TriggerTag {
+    MOCK_TEST_MARKS, SYLLABUS_BACKLOG, PEER_PRESSURE, EXAM_DATE_ANXIETY, WORKLOAD, GENERAL_STRESS
+}

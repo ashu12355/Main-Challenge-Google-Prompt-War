@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindFlow | Student Exam Stress Management & Well-being Dashboard</title>
+    <meta name="description" content="A premium, accessible student well-being dashboard designed to manage exam-phase stress, track emotional trends, and generate personalized AI wellness nudges.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(17, 24, 39, 1) 0%, rgba(8, 10, 24, 1) 90%);
+        }
+        .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+    </style>
+</head>
+<body class="h-full text-slate-100 flex flex-col antialiased selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+
+    <!-- Glowing blob decorations -->
+    <div class="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="w-full border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="brain-circuit" class="h-5 w-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="font-outfit text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-200 via-indigo-100 to-white bg-clip-text text-transparent">MindFlow</span>
+                    <span class="text-xs block text-slate-400 font-medium tracking-wide">STUDENT STRESS COMPANION</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Target Exam Indicator -->
+                <div id="examBadge" class="hidden px-3.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/80 text-xs font-semibold text-indigo-300 tracking-wide">
+                    TARGET: <span id="userExam">JEE</span>
+                </div>
+                <!-- User Profile Menu -->
+                <div id="userProfile" class="hidden flex items-center gap-3">
+                    <span id="userName" class="text-sm font-semibold text-slate-200 hidden sm:inline">Student</span>
+                    <button onclick="handleLogout()" class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 hover:bg-slate-800/50 hover:border-rose-950/40 focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all" aria-label="Log Out">
+                        <i data-lucide="log-out" class="h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        
+        <!-- ================= AUTH SCREEN ================= -->
+        <section id="authSection" class="max-w-md mx-auto my-12 bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-8 rounded-2xl shadow-2xl relative overflow-hidden transition-all duration-500">
+            <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500 via-violet-600 to-indigo-500"></div>
+            
+            <div class="text-center mb-8">
+                <h2 class="font-outfit text-3xl font-bold text-white mb-2">Welcome to MindFlow</h2>
+                <p class="text-slate-400 text-sm">Empowering students through high-pressure exam cycles</p>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="flex p-1 bg-slate-950/60 border border-slate-800 rounded-xl mb-6">
+                <button id="loginTabBtn" onclick="toggleAuthTab('login')" class="w-1/2 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all duration-300">Log In</button>
+                <button id="signupTabBtn" onclick="toggleAuthTab('signup')" class="w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all duration-300">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleAuth(event, 'login')" class="space-y-4">
+                <div>
+                    <label for="loginUser" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
+                    <input type="text" id="loginUser" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="Enter your username">
+                </div>
+                <div>
+                    <label for="loginPass" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                    <input type="password" id="loginPass" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    Access Dashboard
+                </button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" onsubmit="handleAuth(event, 'signup')" class="space-y-4 hidden">
+                <div>
+                    <label for="signupUser" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Username</label>
+                    <input type="text" id="signupUser" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="Pick a username">
+                </div>
+                <div>
+                    <label for="signupPass" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Password</label>
+                    <input type="password" id="signupPass" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" placeholder="At least 6 characters">
+                </div>
+                <div>
+                    <label for="signupExam" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Target Exam</label>
+                    <select id="signupExam" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                        <option value="JEE">JEE (Joint Entrance Examination)</option>
+                        <option value="NEET">NEET (National Eligibility cum Entrance Test)</option>
+                        <option value="CUET">CUET (Common University Entrance Test)</option>
+                        <option value="CAT">CAT (Common Admission Test)</option>
+                        <option value="GATE">GATE (Graduate Aptitude Test in Engineering)</option>
+                        <option value="UPSC">UPSC (Civil Services Exam)</option>
+                        <option value="BOARDS">Boards (10th/12th Board Examinations)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    Register Account
+                </button>
+            </form>
+
+            <!-- Try Offline Demo Mode Trigger -->
+            <div class="mt-6 border-t border-slate-800/80 pt-4 flex flex-col items-center">
+                <button type="button" onclick="activateDemoMode()" class="w-full flex items-center justify-center gap-2 text-center text-xs text-indigo-400 hover:text-indigo-300 font-semibold focus:outline-none hover:underline py-2 rounded-lg bg-indigo-950/20 border border-indigo-900/40 transition-all hover:bg-indigo-950/30">
+                    <i data-lucide="zap" class="h-3.5 w-3.5"></i>
+                    <span>Try Offline Demo Mode (Bypass Backend)</span>
+                </button>
+                <span class="text-[10px] text-slate-500 mt-2 text-center">Bypasses sandbox network blocks to run app in simulated preview mode.</span>
+            </div>
+        </section>
+
+        <!-- ================= MAIN DASHBOARD ================= -->
+        <section id="dashboardSection" class="hidden space-y-8 animate-[fadeIn_0.5s_ease-out]">
+            
+            <!-- Welcome Nudge Banner -->
+            <div class="bg-gradient-to-r from-slate-900/90 to-indigo-950/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <h1 class="font-outfit text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                        Hello, <span id="studentHeading" class="text-indigo-400">Student</span>! Keep your mind calm.
+                    </h1>
+                    <div id="aiNudgeContent">
+                        <!-- Nudge block -->
+                        <div class="text-slate-300 text-sm leading-relaxed" id="nudgeText">
+                            Click below to generate your personalized AI-driven wellness advice tailored to your target exam timeline.
+                        </div>
+                    </div>
+                    <!-- Skeleton Loader -->
+                    <div id="nudgeSkeleton" class="hidden space-y-2">
+                        <div class="h-4 bg-slate-800 rounded w-3/4 animate-pulse"></div>
+                        <div class="h-4 bg-slate-800 rounded w-1/2 animate-pulse"></div>
+                    </div>
+                </div>
+                <button onclick="fetchNudge()" id="nudgeBtn" class="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold px-5 py-3 rounded-xl shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <i data-lucide="sparkles" class="h-4 w-4"></i>
+                    <span>Generate Tip</span>
+                </button>
+            </div>
+
+            <!-- Two Column Layout: Logs & Analytics -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Left Block: Logging Inputs (Mood & Reflection) -->
+                <div class="lg:col-span-1 space-y-8">
+                    
+                    <!-- Mood Tracker Log Form -->
+                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg relative">
+                        <h2 class="font-outfit text-lg font-bold text-white mb-5 flex items-center gap-2">
+                            <i data-lucide="smile" class="text-indigo-400 h-5 w-5"></i>
+                            <span>How is your stress level?</span>
+                        </h2>
+
+                        <form id="moodForm" onsubmit="handleMoodSubmit(event)" class="space-y-5">
+                            <!-- Emojis Accessible Selectors -->
+                            <div>
+                                <span class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Select Current State</span>
+                                <div class="grid grid-cols-4 gap-2.5" role="radiogroup" aria-label="Mood options">
+                                    <button type="button" onclick="selectMood('EXCELLENT')" id="mood_EXCELLENT" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Excellent mood">
+                                        <span class="text-2xl mb-1">😇</span>
+                                        <span class="text-[10px] font-semibold text-slate-400">Excellent</span>
+                                    </button>
+                                    <button type="button" onclick="selectMood('ANXIOUS')" id="mood_ANXIOUS" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Anxious mood">
+                                        <span class="text-2xl mb-1">😰</span>
+                                        <span class="text-[10px] font-semibold text-slate-400">Anxious</span>
+                                    </button>
+                                    <button type="button" onclick="selectMood('BURNED_OUT')" id="mood_BURNED_OUT" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Burned out mood">
+                                        <span class="text-2xl mb-1">🔥</span>
+                                        <span class="text-[10px] font-semibold text-slate-400">Burned Out</span>
+                                    </button>
+                                    <button type="button" onclick="selectMood('TIRED')" id="mood_TIRED" class="mood-btn flex flex-col items-center justify-center p-3 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" aria-checked="false" role="radio" aria-label="Tired mood">
+                                        <span class="text-2xl mb-1">😴</span>
+                                        <span class="text-[10px] font-semibold text-slate-400">Tired</span>
+                                    </button>
+                                </div>
+                                <input type="hidden" id="selectedMood" required>
+                            </div>
+
+                            <!-- Trigger Selection -->
+                            <div>
+                                <label for="triggerTag" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Major Stress Trigger</label>
+                                <select id="triggerTag" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                                    <option value="MOCK_TEST_MARKS">Mock Test Marks</option>
+                                    <option value="SYLLABUS_BACKLOG">Syllabus Backlog</option>
+                                    <option value="PEER_PRESSURE">Peer Pressure</option>
+                                    <option value="EXAM_DATE_ANXIETY">Exam Date Anxiety</option>
+                                    <option value="WORKLOAD">Heavy Workload / Stamina</option>
+                                    <option value="GENERAL_STRESS">General Stress</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700/80 border border-slate-700 text-white font-semibold py-3 px-4 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                Log Stress State
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Guided reflection Evening Journal -->
+                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg">
+                        <h2 class="font-outfit text-lg font-bold text-white mb-2 flex items-center gap-2">
+                            <i data-lucide="book-heart" class="text-indigo-400 h-5 w-5"></i>
+                            <span>Evening Reflection</span>
+                        </h2>
+                        <p class="text-slate-400 text-xs mb-5">Answer tailored guided questions to limit negative rumination.</p>
+
+                        <form id="journalForm" onsubmit="handleJournalSubmit(event)" class="space-y-4">
+                            <div>
+                                <label for="journalText" id="journalPromptLabel" class="block text-sm text-indigo-300 font-medium mb-2 leading-relaxed">
+                                    What is one mock syllabus milestone you made progress on today, and how will you wind down tonight?
+                                </label>
+                                <textarea id="journalText" required rows="4" class="w-full bg-slate-950/60 border border-slate-800 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" placeholder="Write down your reflections (we automatically filter HTML script tags)..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-indigo-600/90 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                Save Reflection
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- Right Block: Dynamic Trends & History -->
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <!-- Graph Chart Panel -->
+                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="font-outfit text-lg font-bold text-white flex items-center gap-2">
+                                <i data-lucide="line-chart" class="text-indigo-400 h-5 w-5"></i>
+                                <span>Mood & Stress Analytics</span>
+                            </h2>
+                            <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 bg-indigo-950/50 border border-indigo-900/30 text-indigo-300 rounded-lg">LAST 7 DAYS</span>
+                        </div>
+                        <div class="relative h-[280px] w-full flex items-center justify-center">
+                            <canvas id="moodChart" aria-label="Line graph mapping emotional scores over time"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Journal timeline history & stress stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Timeline -->
+                        <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col h-[320px]">
+                            <h2 class="font-outfit text-base font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-2 flex-shrink-0">
+                                <i data-lucide="history" class="text-indigo-400 h-4.5 w-4.5"></i>
+                                <span>Journal History</span>
+                            </h2>
+                            <div id="journalHistoryList" class="space-y-4 overflow-y-auto flex-grow pr-1">
+                                <div class="text-slate-500 text-sm text-center py-8">No reflection entries yet.</div>
+                            </div>
+                        </div>
+
+                        <!-- Stress Statistics / Triggers Counts -->
+                        <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col h-[320px]">
+                            <h2 class="font-outfit text-base font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-2 flex-shrink-0">
+                                <i data-lucide="alert-triangle" class="text-indigo-400 h-4.5 w-4.5"></i>
+                                <span>Trigger Distribution</span>
+                            </h2>
+                            <div id="triggerStats" class="space-y-3.5 overflow-y-auto flex-grow pr-1">
+                                <div class="text-slate-500 text-sm text-center py-8">Log stress states to populate stats.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 MindFlow Student Health Initiative. Fully responsive and WCAG AA contrast compliant.</p>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Global State
+        let token = localStorage.getItem('jwt_token') || '';
+        let currentUser = localStorage.getItem('username') || '';
+        let targetExam = localStorage.getItem('target_exam') || '';
+        let currentSelectedMood = '';
+        let chartInstance = null;
+
+        // Offline Demo Mode state
+        let isDemoMode = localStorage.getItem('is_demo_mode') === 'true';
+        let demoLogs = JSON.parse(localStorage.getItem('demo_logs') || '[]');
+        let demoReflections = JSON.parse(localStorage.getItem('demo_reflections') || '[]');
+
+        function activateDemoMode() {
+            isDemoMode = true;
+            token = 'demo_token_12345';
+            currentUser = 'DemoStudent';
+            targetExam = 'JEE';
+            
+            localStorage.setItem('is_demo_mode', 'true');
+            localStorage.setItem('jwt_token', token);
+            localStorage.setItem('username', currentUser);
+            localStorage.setItem('target_exam', targetExam);
+
+            // Seed initial data
+            if (demoLogs.length === 0) {
+                demoLogs = [
+                    { id: 1, mood: 'EXCELLENT', triggerTag: 'GENERAL_STRESS', timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 2, mood: 'TIRED', triggerTag: 'WORKLOAD', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 3, mood: 'ANXIOUS', triggerTag: 'SYLLABUS_BACKLOG', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+                    { id: 4, mood: 'BURNED_OUT', triggerTag: 'MOCK_TEST_MARKS', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
+                ];
+                localStorage.setItem('demo_logs', JSON.stringify(demoLogs));
+            }
+            if (demoReflections.length === 0) {
+                demoReflections = [
+                    { id: 1, entryText: "Completed my JEE mathematics practice sheet, but got a bit anxious about backlog.", creationDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() }
+                ];
+                localStorage.setItem('demo_reflections', JSON.stringify(demoReflections));
+            }
+
+            showDashboard();
+        }
+
+        // Emojis mapping to numeric value for line graph
+        const moodNumericValue = {
+            'EXCELLENT': 4,
+            'ANXIOUS': 2,
+            'BURNED_OUT': 1,
+            'TIRED': 2
+        };
+
+        const moodEmoji = {
+            'EXCELLENT': '😇 Excellent',
+            'ANXIOUS': '😰 Anxious',
+            'BURNED_OUT': '🔥 Burned Out',
+            'TIRED': '😴 Tired'
+        };
+
+        const triggerNames = {
+            'MOCK_TEST_MARKS': 'Mock Test Marks',
+            'SYLLABUS_BACKLOG': 'Syllabus Backlog',
+            'PEER_PRESSURE': 'Peer Pressure',
+            'EXAM_DATE_ANXIETY': 'Exam Date Anxiety',
+            'WORKLOAD': 'Heavy Workload',
+            'GENERAL_STRESS': 'General Stress'
+        };
+
+        // On Load
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initSession();
+        });
+
+        function initSession() {
+            if (token && currentUser) {
+                showDashboard();
+            } else {
+                showAuth();
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('examBadge').classList.add('hidden');
+            document.getElementById('userProfile').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            
+            document.getElementById('userName').textContent = currentUser;
+            document.getElementById('studentHeading').textContent = currentUser;
+            document.getElementById('userExam').textContent = targetExam;
+            
+            document.getElementById('examBadge').classList.remove('hidden');
+            document.getElementById('userProfile').classList.remove('hidden');
+            
+            // Tailor the journal prompts based on exam
+            updateJournalPrompts();
+
+            // Load initial API data
+            fetchAnalytics();
+            fetchJournals();
+        }
+
+        function toggleAuthTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginTabBtn = document.getElementById('loginTabBtn');
+            const signupTabBtn = document.getElementById('signupTabBtn');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all duration-300';
+                signupTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all duration-300';
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                signupTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all duration-300';
+                loginTabBtn.className = 'w-1/2 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all duration-300';
+            }
+        }
+
+        // Custom guided reflection questions based on milestones/exam
+        function updateJournalPrompts() {
+            const label = document.getElementById('journalPromptLabel');
+            if (targetExam === 'JEE' || targetExam === 'NEET') {
+                label.textContent = "Which subject topic (e.g. Physics backlog or Biology mock syllabus) felt stressful today, what is one key formula or concept you consolidated, and how will you wind down tonight?";
+            } else if (targetExam === 'UPSC') {
+                label.textContent = "How did you manage mock answer writing stress today, how many hours did you revise general studies, and what is your relaxation activity for tonight?";
+            } else {
+                label.textContent = "What is one study milestone you made progress on today, what stress factors did you overcome, and how will you wind down tonight?";
+            }
+        }
+
+        // Auth Submit handler
+        async function handleAuth(e, type) {
+            e.preventDefault();
+            const url = `/api/v1/auth/${type}`;
+            let payload = {};
+
+            if (type === 'login') {
+                payload = {
+                    username: document.getElementById('loginUser').value,
+                    password: document.getElementById('loginPass').value
+                };
+            } else {
+                payload = {
+                    username: document.getElementById('signupUser').value,
+                    password: document.getElementById('signupPass').value,
+                    targetExam: document.getElementById('signupExam').value
+                };
+            }
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errMsg = await res.text();
+                    alert(errMsg || 'Authentication failed. Please verify credentials.');
+                    return;
+                }
+
+                const data = await res.json();
+                token = data.token;
+                currentUser = data.username;
+                targetExam = data.targetExam;
+
+                localStorage.setItem('jwt_token', token);
+                localStorage.setItem('username', currentUser);
+                localStorage.setItem('target_exam', targetExam);
+
+                // clear inputs
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPass').value = '';
+                document.getElementById('signupUser').value = '';
+                document.getElementById('signupPass').value = '';
+
+                showDashboard();
+            } catch (err) {
+                console.error(err);
+                alert('Authentication request failed. Ensure the server is online.');
+            }
+        }
+
+        function handleLogout() {
+            token = '';
+            currentUser = '';
+            targetExam = '';
+            isDemoMode = false;
+            localStorage.removeItem('is_demo_mode');
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('target_exam');
+            localStorage.removeItem('demo_logs');
+            localStorage.removeItem('demo_reflections');
+            showAuth();
+        }
+
+        // Active State Emoji Select
+        function selectMood(mood) {
+            currentSelectedMood = mood;
+            document.getElementById('selectedMood').value = mood;
+
+            // Reset borders
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+                btn.setAttribute('aria-checked', 'false');
+            });
+
+            // Set active state
+            const activeBtn = document.getElementById(`mood_${mood}`);
+            activeBtn.classList.add('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+            activeBtn.setAttribute('aria-checked', 'true');
+        }
+
+        // Log Mood Submit
+        async function handleMoodSubmit(e) {
+            e.preventDefault();
+            if (!currentSelectedMood) {
+                alert('Please select a mood emoji.');
+                return;
+            }
+
+            const trigger = document.getElementById('triggerTag').value;
+            if (isDemoMode) {
+                const newLog = {
+                    id: demoLogs.length + 1,
+                    mood: currentSelectedMood,
+                    triggerTag: trigger,
+                    timestamp: new Date().toISOString()
+                };
+                demoLogs.push(newLog);
+                localStorage.setItem('demo_logs', JSON.stringify(demoLogs));
+
+                // Reset selection
+                currentSelectedMood = '';
+                document.getElementById('selectedMood').value = '';
+                document.querySelectorAll('.mood-btn').forEach(btn => {
+                    btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+                    btn.setAttribute('aria-checked', 'false');
+                });
+
+                fetchAnalytics();
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/v1/moods', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ mood: currentSelectedMood, triggerTag: trigger })
+                });
+
+                if (!res.ok) {
+                    alert('Failed to log mood.');
+                    return;
+                }
+
+                // Reset selection
+                currentSelectedMood = '';
+                document.getElementById('selectedMood').value = '';
+                document.querySelectorAll('.mood-btn').forEach(btn => {
+                    btn.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-500/20', 'bg-indigo-950/20');
+                    btn.setAttribute('aria-checked', 'false');
+                });
+
+                fetchAnalytics();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Log Reflection Submit
+        async function handleJournalSubmit(e) {
+            e.preventDefault();
+            const text = document.getElementById('journalText').value;
+
+            if (isDemoMode) {
+                const newReflection = {
+                    id: demoReflections.length + 1,
+                    entryText: text,
+                    creationDate: new Date().toISOString()
+                };
+                demoReflections.push(newReflection);
+                localStorage.setItem('demo_reflections', JSON.stringify(demoReflections));
+
+                document.getElementById('journalText').value = '';
+                fetchJournals();
+                fetchAnalytics(); // Refresh logs distribution
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/v1/journals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ entryText: text })
+                });
+
+                if (!res.ok) {
+                    alert('Failed to save journal reflection.');
+                    return;
+                }
+
+                document.getElementById('journalText').value = '';
+                fetchJournals();
+                fetchAnalytics(); // Refresh logs distribution
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Journals List
+        async function fetchJournals() {
+            try {
+                const res = await fetch('/api/v1/journals', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+
+                const journals = await res.json();
+                const list = document.getElementById('journalHistoryList');
+
+                if (journals.length === 0) {
+                    list.innerHTML = `<div class="text-slate-500 text-xs text-center py-12">No reflection entries saved yet.</div>`;
+                    return;
+                }
+
+                list.innerHTML = journals.map(j => {
+                    const date = new Date(j.creationDate).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    return `
+                        <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-xl space-y-1.5 hover:border-slate-700/80 transition-all duration-300">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">${date}</span>
+                                <i data-lucide="check-circle-2" class="h-3.5 w-3.5 text-emerald-500"></i>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed font-sans">${escapeHTML(j.entryText)}</p>
+                        </div>
+                    `;
+                }).join('');
+                lucide.createIcons();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch Mood Analytics and Render Graph
+        async function fetchAnalytics() {
+            try {
+                const res = await fetch('/api/v1/moods/analytics', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) return;
+
+                const data = await res.json();
+                
+                renderChart(data.logs);
+                renderTriggerDistribution(data.triggerCounts);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Draw Line Chart.js
+        function renderChart(logs) {
+            const ctx = document.getElementById('moodChart').getContext('2d');
+            
+            // Take up to 10 recent logs in chronological order
+            const recentLogs = [...logs].slice(0, 12).reverse();
+
+            const labels = recentLogs.map(log => {
+                const date = new Date(log.timestamp);
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            });
+            const dataPoints = recentLogs.map(log => moodNumericValue[log.mood] || 2);
+            const tooltipsText = recentLogs.map(log => `${moodEmoji[log.mood]} (${triggerNames[log.triggerTag] || log.triggerTag})`);
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            if (logs.length === 0) {
+                // Render placeholder chart
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            data: [3, 2, 2, 4, 3, 2, 4],
+                            borderColor: 'rgba(99, 102, 241, 0.25)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.02)',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { display: false }, x: { grid: { color: 'rgba(255,255,255,0.03)' } } }
+                    }
+                });
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Stress Indicator Level',
+                        data: dataPoints,
+                        borderColor: '#6366f1',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#818cf8',
+                        pointBorderColor: '#1e1b4b',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.35
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return tooltipsText[context.dataIndex];
+                                }
+                            },
+                            backgroundColor: '#0f172a',
+                            titleColor: '#94a3b8',
+                            bodyColor: '#f1f5f9',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 10,
+                            bodyFont: { family: 'Inter' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    if (value === 1) return '🔥 Burnout';
+                                    if (value === 2) return '😰 Anxious/Tired';
+                                    if (value === 4) return '😇 Excellent';
+                                    return '';
+                                },
+                                color: '#94a3b8',
+                                font: { size: 10, family: 'Outfit', weight: 'bold' }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        x: {
+                            ticks: { color: '#94a3b8', font: { size: 10, family: 'Inter' } },
+                            grid: { color: 'rgba(255, 255, 255, 0.03)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render Trigger Distribution bar values
+        function renderTriggerDistribution(counts) {
+            const target = document.getElementById('triggerStats');
+            
+            const list = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+            const total = list.reduce((sum, item) => sum + item[1], 0);
+
+            if (total === 0) {
+                target.innerHTML = `<div class="text-slate-500 text-xs text-center py-12">Log your stress parameters to view distributions.</div>`;
+                return;
+            }
+
+            target.innerHTML = list.map(([key, val]) => {
+                const percent = total > 0 ? Math.round((val / total) * 100) : 0;
+                return `
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs">
+                            <span class="font-medium text-slate-300">${triggerNames[key] || key}</span>
+                            <span class="font-bold text-indigo-400">${val} log${val > 1 ? 's' : ''} (${percent}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-900">
+                            <div class="bg-gradient-to-r from-indigo-500 to-violet-600 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Invoke Asynchronous AI Personalized Nudge
+        async function fetchNudge() {
+            const nudgeTextEl = document.getElementById('nudgeText');
+            const skeleton = document.getElementById('nudgeSkeleton');
+            const nudgeBtn = document.getElementById('nudgeBtn');
+
+            nudgeTextEl.classList.add('hidden');
+            skeleton.classList.remove('hidden');
+            nudgeBtn.disabled = true;
+            nudgeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const res = await fetch('/api/v1/nudges/personalized', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    nudgeTextEl.textContent = "Take a deep breath and split your review tasks. Consistent small breaks yield premium retention!";
+                    return;
+                }
+
+                const data = await res.json();
+                nudgeTextEl.textContent = data.nudgeText;
+            } catch (err) {
+                console.error(err);
+                nudgeTextEl.textContent = "Take a deep breath and split your review tasks. Consistent small breaks yield premium retention!";
+            } finally {
+                skeleton.classList.add('hidden');
+                nudgeTextEl.classList.remove('hidden');
+                nudgeBtn.disabled = false;
+                nudgeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Escape string HTML to prevent local script execution
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>

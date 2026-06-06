@@ -1,0 +1,156 @@
+package com.wellbeing.service;
+
+import com.wellbeing.model.MoodLog;
+import com.wellbeing.model.User;
+import com.wellbeing.model.WellnessNudge;
+import com.wellbeing.repository.MoodLogRepository;
+import com.wellbeing.repository.WellnessNudgeRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+@Service
+public class GeminiService {
+
+    @Autowired
+    private WellnessNudgeRepository nudgeRepository;
+
+    @Autowired
+    private MoodLogRepository moodLogRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Value("${gemini.api.url}")
+    private String apiUrl;
+
+    @Value("${gemini.api.key:}")
+    private String apiKey;
+
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Async
+    public CompletableFuture<WellnessNudge> generateNudgeAsync() {
+        User user = userService.getCurrentUser();
+        List<MoodLog> recentMoods = moodLogRepository.findByUserOrderByTimestampDesc(user);
+
+        // Construct context-aware prompt
+        String targetExamName = user.getTargetExam().name();
+        StringBuilder promptBuilder = new StringBuilder();
+        promptBuilder.append("You are a supportive student counselor. Generate a concise, 2-sentence wellness advice/nudge (maximum 40 words) for a student preparing for ")
+                .append(targetExamName)
+                .append(".");
+
+        String contextTag = "GENERAL";
+        if (!recentMoods.isEmpty()) {
+            MoodLog latest = recentMoods.get(0);
+            contextTag = latest.getMoodScore().name() + "_" + latest.getTriggerTag().name();
+            promptBuilder.append(" Their current emotional state is ")
+                    .append(latest.getMoodScore().name())
+                    .append(" and their stress trigger is ")
+                    .append(latest.getTriggerTag().name())
+                    .append(". Empathize with this specific state and offer a practical stress-management action.");
+        } else {
+            promptBuilder.append(" Offer a general tip on building study stamina, taking breaks, or dealing with revision stress.");
+        }
+
+        String prompt = promptBuilder.toString();
+        String nudgeText;
+
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            nudgeText = generateMockNudge(user, recentMoods);
+        } else {
+            try {
+                nudgeText = callGeminiApi(prompt);
+            } catch (Exception e) {
+                // Fallback on error to ensure robustness
+                nudgeText = generateMockNudge(user, recentMoods);
+            }
+        }
+
+        WellnessNudge nudge = new WellnessNudge(user, nudgeText, contextTag);
+        WellnessNudge savedNudge = nudgeRepository.save(nudge);
+        return CompletableFuture.completedFuture(savedNudge);
+    }
+
+    private String callGeminiApi(String prompt) throws Exception {
+        String requestBody = objectMapper.writeValueAsString(new GeminiPayload(prompt));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "?key=" + apiKey))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            JsonNode root = objectMapper.readTree(response.body());
+            JsonNode textNode = root.path("candidates").get(0).path("content").path("parts").get(0).path("text");
+            if (!textNode.isMissingNode()) {
+                return textNode.asText().trim();
+            }
+        }
+        throw new RuntimeException("Failed to call Gemini API: HTTP " + response.statusCode() + " -> " + response.body());
+    }
+
+    private String generateMockNudge(User user, List<MoodLog> recentMoods) {
+        String exam = user.getTargetExam().name();
+        if (recentMoods.isEmpty()) {
+            return "Preparing for " + exam + " can feel intense, but consistency is key. Remember to divide your syllabus into daily bite-sized tasks and take 5-minute breathing breaks every hour.";
+        }
+        MoodLog latest = recentMoods.get(0);
+        switch (latest.getMoodScore()) {
+            case EXCELLENT:
+                return "Fantastic to see your positive momentum during " + exam + " preparation! Harness this focus to tackle your toughest revision sections today, but pace yourself.";
+            case ANXIOUS:
+                return "It's completely normal to feel anxious about " + latest.getTriggerTag().name() + " for " + exam + ". Try the 4-7-8 breathing technique now to center your thoughts and ease the pressure.";
+            case BURNED_OUT:
+                return "Burnout warning detected for your " + exam + " prep. Step away from your mock tests or backlog for 30 minutes, hydrate, and take a quick walk. Rest is productive!";
+            case TIRED:
+                return "Feeling tired is your body's signal to recharge. Prioritize a solid 8 hours of sleep tonight so your brain can consolidate what you revised today.";
+            default:
+                return "Keep moving forward step by step on your " + exam + " journey. You have what it takes to manage this workload.";
+        }
+    }
+
+    // Static helper classes for request mapping
+    public static class GeminiPayload {
+        public List<Content> contents;
+
+        public GeminiPayload(String prompt) {
+            this.contents = List.of(new Content(prompt));
+        }
+
+        public static class Content {
+            public List<Part> parts;
+
+            public Content(String text) {
+                this.parts = List.of(new Part(text));
+            }
+        }
+
+        public static class Part {
+            public String text;
+
+            public Part(String text) {
+                this.text = text;
+            }
+        }
+    }
+}

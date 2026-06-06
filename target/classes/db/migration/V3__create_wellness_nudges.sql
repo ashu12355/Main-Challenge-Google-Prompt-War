@@ -1,0 +1,9 @@
+CREATE TABLE wellness_nudges (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    nudge_text TEXT NOT NULL,
+    context_tag VARCHAR(100) NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
